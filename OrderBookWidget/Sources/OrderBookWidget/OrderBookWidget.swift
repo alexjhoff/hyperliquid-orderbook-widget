@@ -27,6 +27,10 @@ public struct OrderBookWidget: View {
             BookFooterView(viewModel: viewModel)
         }
         .task { await viewModel.run() }
+        // Haptics for user actions only. Market data never buzzes.
+        .sensoryFeedback(.selection, trigger: viewModel.symbol)
+        .sensoryFeedback(.selection, trigger: viewModel.precision)
+        .sensoryFeedback(.selection, trigger: viewModel.sizeUnit)
         .onChange(of: scenePhase) { _, phase in
             switch phase {
             case .background: Task { await viewModel.disconnect() }

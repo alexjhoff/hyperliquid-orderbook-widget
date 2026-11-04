@@ -26,6 +26,7 @@ struct BookListView: View {
                     BookSideView(side: .bid, levels: book?.bids ?? [], unit: unit, depth: Self.depth, rowHeight: rowHeight)
                 }
                 .opacity(isStale && book != nil ? 0.45 : 1)
+                .animation(rowAnimation, value: book?.sequence)
                 .animation(.easeOut(duration: 0.2), value: isStale)
             }
             .defaultScrollAnchor(.center)
@@ -37,5 +38,12 @@ struct BookListView: View {
                 withAnimation(.smooth) { proxy.scrollTo(Self.spreadID, anchor: .center) }
             }
         }
+        .sensoryFeedback(.impact(weight: .light), trigger: recentreRequests)
+    }
+
+    /// Rows keyed by price slide to their new slot when the market moves. The first snapshot of a
+    /// subscription replaces the book outright instead of sliding every row.
+    private var rowAnimation: Animation? {
+        (book?.sequence ?? 0) > 1 ? .smooth(duration: 0.28) : nil
     }
 }

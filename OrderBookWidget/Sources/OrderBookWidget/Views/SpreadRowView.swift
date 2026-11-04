@@ -17,6 +17,8 @@ struct SpreadRowView: View {
             Text(book?.midLabel ?? "–")
                 .font(.title3.weight(.semibold).monospacedDigit())
                 .foregroundStyle(tint)
+                .contentTransition(.numericText(value: book?.mid ?? 0))
+                .animation(.snappy, value: book?.mid)
             Image(systemName: trend == .down ? "arrow.down" : "arrow.up")
                 .font(.caption.weight(.bold))
                 .foregroundStyle(tint)
