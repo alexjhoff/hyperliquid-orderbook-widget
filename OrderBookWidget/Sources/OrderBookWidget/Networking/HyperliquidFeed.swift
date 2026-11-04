@@ -1,11 +1,7 @@
 import Foundation
 
 /// Hyperliquid `l2Book` feed over one socket: reconnects with backoff, keeps the socket alive,
-/// and reconciles the one subscription the consumer wants with what the server has confirmed.
-///
-/// Book frames do not say which grouping they carry, so they are admitted only when `confirmed`
-/// equals `wanted` and no request is in flight. A change therefore unsubscribes the old grouping,
-/// waits for the ack, then subscribes the new one.
+/// and keeps the server streaming what `SubscriptionLedger` says the consumer wants.
 actor HyperliquidFeed: OrderBookFeed {
     static let url = URL(string: "wss://api.hyperliquid.xyz/ws")!
 
@@ -23,14 +19,7 @@ actor HyperliquidFeed: OrderBookFeed {
     private var silence: Duration = .zero
     private var sinceLastSend: Duration = .zero
 
-    private var wanted: BookSubscription?
-    private var confirmed: BookSubscription?
-    private var pending: Request?
-
-    private enum Request: Equatable {
-        case subscribe(BookSubscription)
-        case unsubscribe(BookSubscription)
-    }
+    private var ledger = SubscriptionLedger()
 
     init(
         url: URL = HyperliquidFeed.url,
@@ -60,7 +49,7 @@ actor HyperliquidFeed: OrderBookFeed {
     }
 
     func subscribe(_ subscription: BookSubscription) async {
-        wanted = subscription
+        ledger.want(subscription)
         Log.feed.info("Want \(subscription, privacy: .public)")
         if connection == nil {
             connection = Task { await self.maintainConnection() }
@@ -76,8 +65,7 @@ actor HyperliquidFeed: OrderBookFeed {
         let closing = socket
         socket = nil
         isOpen = false
-        confirmed = nil
-        pending = nil
+        ledger.connectionEnded()
         Log.feed.info("Disconnected by client")
         emit(.status(.disconnected))
         // Last, because this suspends: a subscribe that lands here starts a new connection, and
@@ -126,8 +114,7 @@ actor HyperliquidFeed: OrderBookFeed {
             // disconnect() already reset the state, and a newer connection may own it by now.
             guard !Task.isCancelled else { return }
             isOpen = false
-            confirmed = nil
-            pending = nil
+            ledger.connectionEnded()
 
             attempt += 1
             let delay = policy.delay(forAttempt: attempt, jitter: .random(in: policy.jitterRange))
@@ -172,28 +159,17 @@ actor HyperliquidFeed: OrderBookFeed {
 
     // MARK: - Subscriptions
 
-    /// Brings the server's subscription in line with `wanted`, one request at a time.
+    /// Sends whatever the ledger says is needed to bring the server in line.
     private func reconcile() async {
-        guard isOpen, let socket, pending == nil, confirmed != wanted else { return }
-        let request: Request
-        if let confirmed {
-            request = .unsubscribe(confirmed)
-        } else if let wanted {
-            request = .subscribe(wanted)
-        } else {
-            return
-        }
-        pending = request
-        let text =
-            switch request {
-            case .subscribe(let subscription): ClientMessage.subscribe(subscription)
-            case .unsubscribe(let subscription): ClientMessage.unsubscribe(subscription)
+        guard isOpen, let socket else { return }
+        for request in ledger.nextRequests() {
+            do {
+                try await send(request.text, over: socket)
+            } catch {
+                Log.feed.error("Send failed: \(String(describing: error), privacy: .public)")
+                ledger.requestFailed()
+                return
             }
-        do {
-            try await send(text, over: socket)
-        } catch {
-            Log.feed.error("Send failed: \(String(describing: error), privacy: .public)")
-            pending = nil
         }
     }
 
@@ -208,27 +184,25 @@ actor HyperliquidFeed: OrderBookFeed {
 
         switch message {
         case .book(let book):
-            guard let wanted, pending == nil, confirmed == wanted, book.coin == wanted.coin else { return }
+            guard ledger.admitsBooks, let wanted = ledger.wanted, book.coin == wanted.coin else { return }
             if let snapshot = builder.build(from: book, subscription: wanted, receivedAt: .now) {
                 emit(.book(snapshot))
             }
         case .subscribed(let subscription):
             Log.feed.info("Subscribed \(subscription, privacy: .public)")
-            if pending == .subscribe(subscription) { pending = nil }
-            confirmed = subscription
+            ledger.didSubscribe(subscription)
             builder.reset()
             await reconcile()
         case .unsubscribed(let subscription):
             Log.feed.info("Unsubscribed \(subscription, privacy: .public)")
-            if pending == .unsubscribe(subscription) { pending = nil }
-            if confirmed == subscription { confirmed = nil }
+            ledger.didUnsubscribe(subscription)
             await reconcile()
         case .pong:
             break
         case .error(let message):
             // Only documented groupings are ever requested, so this is logged rather than retried.
             Log.feed.error("Server error: \(message, privacy: .public)")
-            pending = nil
+            ledger.requestFailed()
         case .other(let channel):
             Log.feed.debug("Ignored channel \(channel, privacy: .public)")
         }
