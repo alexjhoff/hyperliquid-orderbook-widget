@@ -27,3 +27,14 @@ struct BookFormatterTests {
         #expect(BookFormatter.priceDecimals(nSigFigs: nil, reference: 2_269.05, prices: ["2269.0", "2268.95"]) == 2)
     }
 }
+
+struct PrecisionPresentationTests {
+    let format = BookFormatter(locale: Locale(identifier: "en_US"))
+
+    @Test func labelsGroupingsByTheirTick() {
+        #expect(PrecisionPresentation.tickLabel(for: .four, near: 77_719, format: format) == "$10")
+        #expect(PrecisionPresentation.tickLabel(for: .five, near: 2_269, format: format) == "$0.1")
+        #expect(PrecisionPresentation.tickLabel(for: .full, near: 105_533, format: format) == "$1")
+        #expect(PrecisionPresentation.tickLabel(for: .two, near: nil, format: format) == "2 sig figs")
+    }
+}

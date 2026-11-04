@@ -24,6 +24,7 @@ public struct OrderBookWidget: View {
                 isStale: viewModel.isStale,
                 subscription: viewModel.subscription
             )
+            BookFooterView(viewModel: viewModel)
         }
         .task { await viewModel.run() }
         .onChange(of: scenePhase) { _, phase in
