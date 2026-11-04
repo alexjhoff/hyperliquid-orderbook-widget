@@ -30,12 +30,14 @@ widget renders. The demo app embeds it under a market header card, the way a tra
 
 - **Live book.** 20 levels per side from `wss://api.hyperliquid.xyz/ws`, asks above the spread, bids
   below, in one natively scrolling column centred on the spread. Tap the spread to recentre.
+- **Live trades.** A Book/Trades control switches to the trade stream: price, size and time, newest
+  on top, coloured by the taker's side. It shares the book's socket and follows its market.
 - **Native controls.** A segmented picker for BTC/ETH, a menu picker for price grouping (`nSigFigs`,
   labelled by the tick it produces: $0.1, $1, $10, ...), and a coin/USD size toggle. All persist.
 - **Change feedback.** Rows flash green when size grows, red when it shrinks, white for a new level.
   The mid price rolls with a numeric transition and takes the colour of its last move. The status
   label switches to "3s ago" when the market goes quiet, so the feed never looks frozen.
-- **Information density.** A cumulative depth bar behind every row, so walls stand out; spread in
+- **Information density.** A cumulative depth bar behind every row, growing from the left, so walls stand out; spread in
   price and basis points.
 - **Haptics** for user actions only: picker changes and recentring. Market data never buzzes.
 - **Connection states.** Retry countdown in the header and a dimmed book while its data is stale.
@@ -61,12 +63,12 @@ OrderBookWidget (public View)
 
 | Folder | Holds |
 | --- | --- |
-| `Models` | `Symbol`, `Precision`, `BookSubscription`, `BookSnapshot`, `BookLevel`, `ConnectionStatus` |
-| `Domain` | `SnapshotBuilder`, `BookFormatter`, `ReconnectPolicy`, `StatusPresentation`, `PrecisionPresentation`, `DeepLink`, `BookRefresher` |
-| `Networking` | wire messages, `SocketTransport`, `OrderBookFeed`, `HyperliquidFeed`, `HyperliquidInfoClient` |
+| `Models` | `Symbol`, `Precision`, `BookSubscription`, `BookSnapshot`, `BookLevel`, `Trade`, `WidgetPane`, `ConnectionStatus` |
+| `Domain` | `SnapshotBuilder`, `BookFormatter`, `ReconnectPolicy`, `StatusPresentation`, `PrecisionPresentation`, `TradeBuilder`, `TradeTape`, `DeepLink`, `BookRefresher` |
+| `Networking` | wire messages, `SocketTransport`, `OrderBookFeed`, `HyperliquidFeed`, `SubscriptionLedger`, `HyperliquidInfoClient` |
 | `Persistence` | `SelectionStoring` with UserDefaults and in-memory stores |
 | `ViewModels` | `OrderBookViewModel` |
-| `Views` | header, column header, list, side, row, depth bar, spread row, footer, `A11yID`, preview feed |
+| `Views` | header, pane picker, column header, book list, side, row, depth bar, spread row, trade list, trade row, footer, `A11yID`, preview feed |
 | `Views/Tokens` | `Spacing`, `Radius`, `Opacity`, `Motion`, `Layout`, `Glyph`, `Palette` |
 | `Resources` | String Catalog, privacy manifest |
 | `WidgetExtension/` | `BookWidget`, its intent configuration, timeline provider and entry view |
@@ -85,6 +87,10 @@ a closure.
   arrive late for a superseded one.
 - Hyperliquid closes idle sockets after 60 s; the feed pings every 20 s and reconnects after 30 s of
   silence, with exponential backoff from 0.5 s to 10 s, jittered.
+- Trades need no handshake, because each one names its coin. The feed keeps the channel on the book's
+  market and filters out late frames from the old one; acks for it never reach the book's bookkeeping.
+  `tid` is unique but not ordered, so the tape keeps arrival order and uses `tid` only to drop what a
+  reconnect's snapshot repeats.
 - The Home Screen widget cannot hold a socket. It posts `{"type":"l2Book","coin":...}` to
   `api.hyperliquid.xyz/info`, which returns the same payload, through the same decoder and builder.
 
@@ -112,7 +118,9 @@ Basic by design, one small file per seam, with the feed driven by a scripted soc
 | `ReconnectPolicyTests` | Backoff schedule, cap, jitter bounds |
 | `StatusPresentationTests` | Live, quiet, and retry countdown labels |
 | `OrderBookViewModelTests` | Defaults from the store, applying matching snapshots, rejecting stale ones, persisting and resubscribing, feed call ordering, closing the socket when the view goes away |
-| `HyperliquidFeedTests` | Connect and subscribe, the unsubscribe-then-subscribe handshake, reconnect with backoff, pings and the silence timeout |
+| `HyperliquidFeedTests` | Connect and subscribe, the unsubscribe-then-subscribe handshake, trades following the market, reconnect with backoff, a subscribe during a slow close, pings and the silence timeout |
+| `TradeBuilderTests` | Labels at exchange precision, taker side, malformed trades |
+| `TradeTapeTests` | Newest first, duplicates after a reconnect, capacity |
 | `HyperliquidInfoClientTests` | The REST request and a captured response |
 | `BookRefresherTests` | The Home Screen widget's refresh interval after success and after failure |
 | `DeepLinkTests` | URL round trip and rejected links |
@@ -157,6 +165,7 @@ TestFlight: `Scripts/archive.sh` archives a Release build and uploads it to App 
 
 - Market data only; no order entry or account data.
 - Depth is the 20 levels per side the feed provides.
+- The trade stream keeps the latest 50 trades and lives only while the app runs.
 - The Home Screen widget shows "Couldn't reach Hyperliquid" after a failed fetch and retries in five
   minutes rather than keeping the previous book.
 - Opening the app from the widget on another market rebuilds the in-app widget, which reconnects.
