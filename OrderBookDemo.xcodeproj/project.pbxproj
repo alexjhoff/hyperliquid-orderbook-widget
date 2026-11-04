@@ -15,8 +15,10 @@
 		3EE63014D679A100F3832846 /* TradeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1011712E8362054314EAB7D /* TradeScreen.swift */; };
 		41AEEA5429364784EFC1EB86 /* BookWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91AEEB7E94E74A587305422B /* BookWidget.swift */; };
 		4943B3731F9B98A1D9AF5B06 /* DeepLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FABE2E65E3AFE0017C509F /* DeepLinkRouter.swift */; };
+		58F6F33099AEDB276D3235C0 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 536D05486C2C71B720C853C6 /* PrivacyInfo.xcprivacy */; };
 		85A4035E3B31001439239DC2 /* BookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FD873398795212AF2436E33 /* BookEntry.swift */; };
 		8945550A80C3E17828F6D065 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 9CEB5390DA226E7C7B8E5A7F /* Localizable.xcstrings */; };
+		956EACA0D7E54450E3E7EA69 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 20629A1CBF55E552D78B2336 /* PrivacyInfo.xcprivacy */; };
 		A2A60AD6D00CC5ED786B6A34 /* BookTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483B19BCA54D21B23EAC63E0 /* BookTimelineProvider.swift */; };
 		BD01FF30B630A93A906C332A /* BookConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B707885774AAFF22E060EF /* BookConfiguration.swift */; };
 		D8BE63C5B5B50C682195C7FC /* OrderBookWidget in Frameworks */ = {isa = PBXBuildFile; productRef = 6AADCD1D74D27BC0EFB6F4BE /* OrderBookWidget */; };
@@ -52,9 +54,11 @@
 		04B591117114C947A1F71B30 /* WidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBundle.swift; sourceTree = "<group>"; };
 		1A29DD85EC121D534FB0CBBD /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		1FD873398795212AF2436E33 /* BookEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookEntry.swift; sourceTree = "<group>"; };
+		20629A1CBF55E552D78B2336 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		26B3487E59B68E7E8B751A3C /* OrderBookWidget */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OrderBookWidget; path = OrderBookWidget; sourceTree = SOURCE_ROOT; };
 		297BB779FFC1C6BCC9228EBE /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
 		483B19BCA54D21B23EAC63E0 /* BookTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookTimelineProvider.swift; sourceTree = "<group>"; };
+		536D05486C2C71B720C853C6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		56070B5C80C68FD41D1056C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		84B707885774AAFF22E060EF /* BookConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookConfiguration.swift; sourceTree = "<group>"; };
 		91AEEB7E94E74A587305422B /* BookWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookWidget.swift; sourceTree = "<group>"; };
@@ -116,6 +120,7 @@
 				A94456A675148C9ADE4ACF63 /* DemoApp.swift */,
 				56070B5C80C68FD41D1056C4 /* Info.plist */,
 				1A29DD85EC121D534FB0CBBD /* Localizable.xcstrings */,
+				536D05486C2C71B720C853C6 /* PrivacyInfo.xcprivacy */,
 				F1011712E8362054314EAB7D /* TradeScreen.swift */,
 			);
 			path = Demo;
@@ -140,6 +145,7 @@
 				91AEEB7E94E74A587305422B /* BookWidget.swift */,
 				D85C2719788733D207122B79 /* Info.plist */,
 				9CEB5390DA226E7C7B8E5A7F /* Localizable.xcstrings */,
+				20629A1CBF55E552D78B2336 /* PrivacyInfo.xcprivacy */,
 				04B591117114C947A1F71B30 /* WidgetBundle.swift */,
 			);
 			path = WidgetExtension;
@@ -247,6 +253,7 @@
 			files = (
 				E0F8D5E5167B0CF28EDF4161 /* Assets.xcassets in Resources */,
 				13F95115464CD8736932B7DF /* Localizable.xcstrings in Resources */,
+				58F6F33099AEDB276D3235C0 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -255,6 +262,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8945550A80C3E17828F6D065 /* Localizable.xcstrings in Resources */,
+				956EACA0D7E54450E3E7EA69 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -9,7 +9,7 @@ let package = Package(
         .library(name: "OrderBookWidget", targets: ["OrderBookWidget"])
     ],
     targets: [
-        .target(name: "OrderBookWidget", resources: [.process("Resources")]),
+        .target(name: "OrderBookWidget", resources: [.process("Resources/Localizable.xcstrings"), .copy("Resources/PrivacyInfo.xcprivacy")]),
         .testTarget(name: "OrderBookWidgetTests", dependencies: ["OrderBookWidget"]),
     ]
 )
