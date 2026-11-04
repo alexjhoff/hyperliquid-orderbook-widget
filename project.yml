@@ -23,6 +23,7 @@ targets:
       - path: Demo
     dependencies:
       - package: OrderBookWidget
+      - target: OrderBookWidgetExtension
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.alexhoff.OrderBookWidgetDemo
@@ -34,6 +35,25 @@ targets:
         TARGETED_DEVICE_FAMILY: "1"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+  OrderBookWidgetExtension:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: WidgetExtension
+    dependencies:
+      - package: OrderBookWidget
+    info:
+      path: WidgetExtension/Info.plist
+      properties:
+        CFBundleDisplayName: Order Book
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.alexhoff.OrderBookWidgetDemo.widget
+        SKIP_INSTALL: YES
 schemes:
   OrderBookDemo:
     build:

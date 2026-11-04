@@ -1,6 +1,19 @@
 #if DEBUG
     import Foundation
 
+    extension BookSnapshot {
+        /// A fixed BTC book for previews, in the app and in the Home Screen widget.
+        public static let preview: BookSnapshot = {
+            var builder = SnapshotBuilder()
+            let levels = (0..<BookListView.depth).map { offset in
+                (bid: WireLevel(px: "\(77_719 - offset).0", sz: "\(Double(offset + 1) * 0.7)", n: 1),
+                 ask: WireLevel(px: "\(77_720 + offset).0", sz: "\(Double(offset + 1) * 0.5)", n: 1))
+            }
+            let book = WireBook(coin: "BTC", time: 0, levels: [levels.map(\.bid), levels.map(\.ask)])
+            return builder.build(from: book, subscription: BookSubscription(coin: "BTC", nSigFigs: nil), receivedAt: .now)!
+        }()
+    }
+
     /// A synthetic market for previews: a book that drifts and churns every half second.
     actor PreviewFeed: OrderBookFeed {
         private var sink: AsyncStream<FeedEvent>.Continuation?

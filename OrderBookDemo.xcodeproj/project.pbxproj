@@ -7,22 +7,70 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00393917EF8CCFF6A3FD2AA1 /* BookEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59D10CAB59B614903BC8991 /* BookEntryView.swift */; };
+		088FBE54EFD3C26F57F4D1B6 /* WidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B591117114C947A1F71B30 /* WidgetBundle.swift */; };
 		1FC0DCC8492F00412A4996FA /* OrderBookWidget in Frameworks */ = {isa = PBXBuildFile; productRef = 8400FBE3FF31B85D657EAB46 /* OrderBookWidget */; };
 		37890A434CBBF729115DAD35 /* DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A94456A675148C9ADE4ACF63 /* DemoApp.swift */; };
 		3EE63014D679A100F3832846 /* TradeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1011712E8362054314EAB7D /* TradeScreen.swift */; };
+		41AEEA5429364784EFC1EB86 /* BookWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91AEEB7E94E74A587305422B /* BookWidget.swift */; };
+		85A4035E3B31001439239DC2 /* BookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FD873398795212AF2436E33 /* BookEntry.swift */; };
+		A2A60AD6D00CC5ED786B6A34 /* BookTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483B19BCA54D21B23EAC63E0 /* BookTimelineProvider.swift */; };
+		BD01FF30B630A93A906C332A /* BookConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B707885774AAFF22E060EF /* BookConfiguration.swift */; };
+		D8BE63C5B5B50C682195C7FC /* OrderBookWidget in Frameworks */ = {isa = PBXBuildFile; productRef = 6AADCD1D74D27BC0EFB6F4BE /* OrderBookWidget */; };
+		E036C4BE8A958034F24CF7F9 /* OrderBookWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = ED901381D0D5BC79C2A03DED /* OrderBookWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		E0F8D5E5167B0CF28EDF4161 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B35549383BC81B7DE775EEC6 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		F5C2B3754A7D2281B6022529 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9F6E6674A62A10895B2B3ABC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2CA4F8EA000D79DF16C59468;
+			remoteInfo = OrderBookWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B6486B91A32DD729A9D8E1F9 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				E036C4BE8A958034F24CF7F9 /* OrderBookWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		04B591117114C947A1F71B30 /* WidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBundle.swift; sourceTree = "<group>"; };
+		1FD873398795212AF2436E33 /* BookEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookEntry.swift; sourceTree = "<group>"; };
 		26B3487E59B68E7E8B751A3C /* OrderBookWidget */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OrderBookWidget; path = OrderBookWidget; sourceTree = SOURCE_ROOT; };
 		297BB779FFC1C6BCC9228EBE /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
+		483B19BCA54D21B23EAC63E0 /* BookTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookTimelineProvider.swift; sourceTree = "<group>"; };
+		84B707885774AAFF22E060EF /* BookConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookConfiguration.swift; sourceTree = "<group>"; };
+		91AEEB7E94E74A587305422B /* BookWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookWidget.swift; sourceTree = "<group>"; };
 		A94456A675148C9ADE4ACF63 /* DemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoApp.swift; sourceTree = "<group>"; };
 		B35549383BC81B7DE775EEC6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C59D10CAB59B614903BC8991 /* BookEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookEntryView.swift; sourceTree = "<group>"; };
 		CB44802A9A47224531C1BBCC /* OrderBookDemo.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = OrderBookDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D85C2719788733D207122B79 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		ED901381D0D5BC79C2A03DED /* OrderBookWidgetExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = OrderBookWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1011712E8362054314EAB7D /* TradeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TradeScreen.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		47717618D6EE4510B361BB71 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D8BE63C5B5B50C682195C7FC /* OrderBookWidget in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F1E3D21F85F235DA63EB72F9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -40,6 +88,7 @@
 				1A765B88E81355F299E23835 /* Config */,
 				222F39C76FDE16E1316C4920 /* Demo */,
 				F97FF2221ECA5EFEBA0B31A7 /* Packages */,
+				BF89AF5BD866295A7573BB87 /* WidgetExtension */,
 				9B88CFA158B645365D7FE98B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -66,8 +115,23 @@
 			isa = PBXGroup;
 			children = (
 				CB44802A9A47224531C1BBCC /* OrderBookDemo.app */,
+				ED901381D0D5BC79C2A03DED /* OrderBookWidgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		BF89AF5BD866295A7573BB87 /* WidgetExtension */ = {
+			isa = PBXGroup;
+			children = (
+				84B707885774AAFF22E060EF /* BookConfiguration.swift */,
+				1FD873398795212AF2436E33 /* BookEntry.swift */,
+				C59D10CAB59B614903BC8991 /* BookEntryView.swift */,
+				483B19BCA54D21B23EAC63E0 /* BookTimelineProvider.swift */,
+				91AEEB7E94E74A587305422B /* BookWidget.swift */,
+				D85C2719788733D207122B79 /* Info.plist */,
+				04B591117114C947A1F71B30 /* WidgetBundle.swift */,
+			);
+			path = WidgetExtension;
 			sourceTree = "<group>";
 		};
 		F97FF2221ECA5EFEBA0B31A7 /* Packages */ = {
@@ -81,6 +145,25 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		2CA4F8EA000D79DF16C59468 /* OrderBookWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1F878C88A51FBA56FA8E1DDA /* Build configuration list for PBXNativeTarget "OrderBookWidgetExtension" */;
+			buildPhases = (
+				4D59F43EC7E73F42E4C9698B /* Sources */,
+				47717618D6EE4510B361BB71 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OrderBookWidgetExtension;
+			packageProductDependencies = (
+				6AADCD1D74D27BC0EFB6F4BE /* OrderBookWidget */,
+			);
+			productName = OrderBookWidgetExtension;
+			productReference = ED901381D0D5BC79C2A03DED /* OrderBookWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		407587D40230CF6298DC0441 /* OrderBookDemo */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A0718A7F04804FFDB6332334 /* Build configuration list for PBXNativeTarget "OrderBookDemo" */;
@@ -88,10 +171,12 @@
 				4E0852693CA56F2B3F576839 /* Sources */,
 				6FE1256497EFE07995DCC31E /* Resources */,
 				F1E3D21F85F235DA63EB72F9 /* Frameworks */,
+				B6486B91A32DD729A9D8E1F9 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				83F0C073BFB78682B7E33CA0 /* PBXTargetDependency */,
 			);
 			name = OrderBookDemo;
 			packageProductDependencies = (
@@ -110,6 +195,10 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					2CA4F8EA000D79DF16C59468 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
 					407587D40230CF6298DC0441 = {
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
@@ -134,6 +223,7 @@
 			projectRoot = "";
 			targets = (
 				407587D40230CF6298DC0441 /* OrderBookDemo */,
+				2CA4F8EA000D79DF16C59468 /* OrderBookWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -150,6 +240,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		4D59F43EC7E73F42E4C9698B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BD01FF30B630A93A906C332A /* BookConfiguration.swift in Sources */,
+				85A4035E3B31001439239DC2 /* BookEntry.swift in Sources */,
+				00393917EF8CCFF6A3FD2AA1 /* BookEntryView.swift in Sources */,
+				A2A60AD6D00CC5ED786B6A34 /* BookTimelineProvider.swift in Sources */,
+				41AEEA5429364784EFC1EB86 /* BookWidget.swift in Sources */,
+				088FBE54EFD3C26F57F4D1B6 /* WidgetBundle.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4E0852693CA56F2B3F576839 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -160,6 +263,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		83F0C073BFB78682B7E33CA0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2CA4F8EA000D79DF16C59468 /* OrderBookWidgetExtension */;
+			targetProxy = F5C2B3754A7D2281B6022529 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		17FA6D849FD00903B13D2CA4 /* Release */ = {
@@ -329,9 +440,50 @@
 			};
 			name = Debug;
 		};
+		E919AC20BFD02C0ADF1357CA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = WidgetExtension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.alexhoff.OrderBookWidgetDemo.widget;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		FF85BC13354B9312F63059A2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = WidgetExtension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.alexhoff.OrderBookWidgetDemo.widget;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1F878C88A51FBA56FA8E1DDA /* Build configuration list for PBXNativeTarget "OrderBookWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FF85BC13354B9312F63059A2 /* Debug */,
+				E919AC20BFD02C0ADF1357CA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		6A46F93570FF374390A50398 /* Build configuration list for PBXProject "OrderBookDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -360,6 +512,10 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		6AADCD1D74D27BC0EFB6F4BE /* OrderBookWidget */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = OrderBookWidget;
+		};
 		8400FBE3FF31B85D657EAB46 /* OrderBookWidget */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = OrderBookWidget;
