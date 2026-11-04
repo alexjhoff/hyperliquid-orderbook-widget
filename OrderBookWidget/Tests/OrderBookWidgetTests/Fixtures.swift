@@ -38,3 +38,10 @@ func makeBook(coin: String = "BTC", bids: [(String, String)], asks: [(String, St
         levels: [bids.map { WireLevel(px: $0.0, sz: $0.1, n: 1) }, asks.map { WireLevel(px: $0.0, sz: $0.1, n: 1) }]
     )
 }
+
+extension Fixture {
+    /// Captured from POST https://api.hyperliquid.xyz/info on 2026-11-03, trimmed to one level per side.
+    static let infoResponse = #"""
+        {"coin":"ETH","time":1793761561338,"levels":[[{"px":"2229.9","sz":"0.116","n":1}],[{"px":"2230.0","sz":"149.3142","n":24}]]}
+        """#
+}
