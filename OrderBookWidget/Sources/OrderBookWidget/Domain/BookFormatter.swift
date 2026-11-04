@@ -4,6 +4,8 @@ import Foundation
 /// the main thread and views never touch a number formatter.
 struct BookFormatter: Sendable {
     static let maxFractionDigits = 9
+    /// Used for a coin the widget does not know the exchange precision of.
+    static let fallbackSizeDecimals = 4
     /// Shown wherever a number is not available yet.
     static let placeholder = "–"
     /// Dollar amounts from here up read as "$1.23K" rather than "$1,234".
@@ -18,6 +20,11 @@ struct BookFormatter: Sendable {
     func decimal(_ value: Double, fractionDigits: Int) -> String {
         guard value.isFinite else { return Self.placeholder }
         return value.formatted(.number.precision(.fractionLength(fractionDigits)).locale(locale))
+    }
+
+    /// A trade's wall-clock time to the second, in the user's locale and time zone.
+    func time(_ date: Date) -> String {
+        date.formatted(.dateTime.hour().minute().second().locale(locale))
     }
 
     /// Dollar amounts at a glance: "$842", "$12.3K", "$1.92M".

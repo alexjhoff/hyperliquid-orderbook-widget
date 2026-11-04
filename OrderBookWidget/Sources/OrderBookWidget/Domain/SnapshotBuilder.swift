@@ -35,7 +35,7 @@ struct SnapshotBuilder: Sendable {
             sequence: sequence,
             priceDecimals: BookFormatter.priceDecimals(
                 nSigFigs: subscription.nSigFigs, reference: mid ?? 0, prices: book.levels.flatMap { $0.map(\.px) }),
-            sizeDecimals: Symbol(rawValue: book.coin)?.sizeDecimals ?? 4,
+            sizeDecimals: Symbol(rawValue: book.coin)?.sizeDecimals ?? BookFormatter.fallbackSizeDecimals,
             hasHistory: previous != nil
         )
         let trend: PriceTrend =
