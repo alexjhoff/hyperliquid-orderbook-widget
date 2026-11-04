@@ -9,6 +9,7 @@ permissions:
   contents: read
 
 env:
+  XCODEGEN_VERSION: 2.46.0
   # Warnings are errors, so a new Xcode is adopted on purpose rather than by a runner image update.
   DEVELOPER_DIR: /Applications/Xcode_26.5.app/Contents/Developer
 
@@ -18,6 +19,17 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+
+      - name: Lint
+        run: xcrun swift-format lint --strict --recursive OrderBookWidget/Package.swift OrderBookWidget/Sources OrderBookWidget/Tests Demo WidgetExtension
+
+      - name: Verify the committed project matches project.yml
+        run: |
+          curl -fsSL -o xcodegen.zip "https://github.com/yonaskolb/XcodeGen/releases/download/${XCODEGEN_VERSION}/xcodegen.zip"
+          unzip -q xcodegen.zip -d "$RUNNER_TEMP"
+          rm xcodegen.zip
+          "$RUNNER_TEMP/xcodegen/bin/xcodegen" generate
+          git diff --exit-code -- OrderBookDemo.xcodeproj
 
       - name: Boot a simulator
         id: sim

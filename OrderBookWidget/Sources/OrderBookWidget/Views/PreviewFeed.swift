@@ -7,8 +7,10 @@
         public static let preview: BookSnapshot = {
             var builder = SnapshotBuilder()
             let levels = (0..<BookListView.depth).map { offset in
-                (bid: WireLevel(px: "\(77_719 - offset).0", sz: "\(Double(offset + 1) * 0.7)", n: 1),
-                 ask: WireLevel(px: "\(77_720 + offset).0", sz: "\(Double(offset + 1) * 0.5)", n: 1))
+                (
+                    bid: WireLevel(px: "\(77_719 - offset).0", sz: "\(Double(offset + 1) * 0.7)", n: 1),
+                    ask: WireLevel(px: "\(77_720 + offset).0", sz: "\(Double(offset + 1) * 0.5)", n: 1)
+                )
             }
             let book = WireBook(coin: "BTC", time: 0, levels: [levels.map(\.bid), levels.map(\.ask)])
             return builder.build(from: book, subscription: BookSubscription(coin: "BTC", nSigFigs: nil), receivedAt: .now)!
@@ -71,8 +73,12 @@
                 coin: subscription.coin,
                 time: Int64(Date.now.timeIntervalSince1970 * 1000),
                 levels: [
-                    (0..<BookListView.depth).map { let l = level(-$0); return WireLevel(px: l.0, sz: l.1, n: 1) },
-                    (1...BookListView.depth).map { let l = level($0); return WireLevel(px: l.0, sz: l.1, n: 1) },
+                    (0..<BookListView.depth).map {
+                        let l = level(-$0); return WireLevel(px: l.0, sz: l.1, n: 1)
+                    },
+                    (1...BookListView.depth).map {
+                        let l = level($0); return WireLevel(px: l.0, sz: l.1, n: 1)
+                    },
                 ]
             )
             if let snapshot = builder.build(from: book, subscription: subscription, receivedAt: .now) {

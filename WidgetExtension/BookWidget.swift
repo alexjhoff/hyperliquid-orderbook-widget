@@ -9,7 +9,7 @@ struct BookWidget: Widget {
         AppIntentConfiguration(
             kind: Self.kind,
             intent: BookConfiguration.self,
-            provider: BookTimelineProvider(fetcher: HyperliquidInfoClient())
+            provider: BookTimelineProvider(refresher: BookRefresher(fetcher: HyperliquidInfoClient()))
         ) { entry in
             BookEntryView(entry: entry)
         }

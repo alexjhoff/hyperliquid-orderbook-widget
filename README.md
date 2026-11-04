@@ -62,13 +62,15 @@ OrderBookWidget (public View)
 | Folder | Holds |
 | --- | --- |
 | `Models` | `Symbol`, `Precision`, `BookSubscription`, `BookSnapshot`, `BookLevel`, `ConnectionStatus` |
-| `Domain` | `SnapshotBuilder`, `BookFormatter`, `ReconnectPolicy`, `StatusPresentation`, `PrecisionPresentation` |
+| `Domain` | `SnapshotBuilder`, `BookFormatter`, `ReconnectPolicy`, `StatusPresentation`, `PrecisionPresentation`, `DeepLink`, `BookRefresher` |
 | `Networking` | wire messages, `SocketTransport`, `OrderBookFeed`, `HyperliquidFeed`, `HyperliquidInfoClient` |
 | `Persistence` | `SelectionStoring` with UserDefaults and in-memory stores |
 | `ViewModels` | `OrderBookViewModel` |
-| `Views` | header, column header, list, side, row, depth bar, spread row, footer, theme, preview feed |
+| `Views` | header, column header, list, side, row, depth bar, spread row, footer, `A11yID`, preview feed |
+| `Views/Tokens` | `Spacing`, `Radius`, `Opacity`, `Motion`, `Layout`, `Glyph`, `Palette` |
+| `Resources` | String Catalog, privacy manifest |
 | `WidgetExtension/` | `BookWidget`, its intent configuration, timeline provider and entry view |
-| `Demo/` | `TradeScreen`, `DeepLinkRouter` |
+| `Demo/` | `TradeScreen` |
 
 Every seam is a protocol with a fake: `FakeFeed` and `InMemorySelectionStore` drive the view model
 in tests, `PreviewFeed` drives previews, and `HyperliquidInfoClient` takes its request transport as
@@ -100,7 +102,7 @@ triggers layout. The socket closes when the app is backgrounded and reconnects o
 cd OrderBookWidget && xcodebuild test -scheme OrderBookWidget -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
 ```
 
-Basic by design, about 400 lines, but every seam exists so more can be added:
+Basic by design, one small file per seam, with the feed driven by a scripted socket and a hand-advanced clock:
 
 | Suite | Covers |
 | --- | --- |
@@ -109,8 +111,11 @@ Basic by design, about 400 lines, but every seam exists so more can be added:
 | `SnapshotBuilderTests` | Totals, depth fractions, mid, spread, bps, change classification, trend, reset, malformed input |
 | `ReconnectPolicyTests` | Backoff schedule, cap, jitter bounds |
 | `StatusPresentationTests` | Live, quiet, and retry countdown labels |
-| `OrderBookViewModelTests` | Defaults from the store, applying matching snapshots, rejecting stale ones, persisting and resubscribing |
+| `OrderBookViewModelTests` | Defaults from the store, applying matching snapshots, rejecting stale ones, persisting and resubscribing, feed call ordering, closing the socket when the view goes away |
+| `HyperliquidFeedTests` | Connect and subscribe, the unsubscribe-then-subscribe handshake, reconnect with backoff, pings and the silence timeout |
 | `HyperliquidInfoClientTests` | The REST request and a captured response |
+| `BookRefresherTests` | The Home Screen widget's refresh interval after success and after failure |
+| `DeepLinkTests` | URL round trip and rejected links |
 
 ## Logging
 
@@ -123,6 +128,9 @@ fetches. Filter in Console.app with `subsystem:com.alexhoff.OrderBookWidget`.
 - Xcode 26, iOS 26. Swift 6 language mode, strict concurrency, warnings as errors.
 - `OrderBookDemo.xcodeproj` is generated from `project.yml` with [XcodeGen](https://github.com/yonaskolb/XcodeGen)
   and committed, so opening it needs no extra tools. After editing `project.yml`, run `xcodegen generate`.
+  CI fails if the committed project drifts from it.
+- Formatting: `xcrun swift-format lint --strict --recursive OrderBookWidget/Sources OrderBookWidget/Tests Demo WidgetExtension`.
+- Strings live in a String Catalog per target, and each target ships a privacy manifest declaring its `UserDefaults` use.
 - Signing: put your team in the untracked `Config/Local.xcconfig`:
 
 ```bash
@@ -156,5 +164,5 @@ TestFlight: `Scripts/archive.sh` archives a Release build and uploads it to App 
 ## AI usage
 
 Built with Claude Code as a pair programmer, which the brief allows. Every file was reviewed, the
-design is documented above, and the aim was a small, dependency-free codebase: about 1,500 lines in
-the package, 200 in the extension, 80 in the demo and 400 of tests.
+design is documented above, and the aim was a small, dependency-free codebase: about 1,800 lines in
+the package, 200 in the extension, 100 in the demo and 800 of tests.
