@@ -10,7 +10,7 @@ public struct OrderBookWidget: View {
     @MainActor public init(symbol: Symbol? = nil) {
         let selections = UserDefaultsSelectionStore()
         if let symbol { selections.symbol = symbol }
-        self.init(viewModel: OrderBookViewModel(feed: HyperliquidFeed(), selections: selections))
+        self.init(viewModel: OrderBookViewModel(feed: HyperliquidFeed(clock: ContinuousClock()), selections: selections))
     }
 
     @MainActor init(viewModel: OrderBookViewModel) {

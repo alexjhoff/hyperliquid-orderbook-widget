@@ -11,6 +11,7 @@ actor HyperliquidFeed: OrderBookFeed {
 
     private let url: URL
     private let policy: ReconnectPolicy
+    private let clock: any Clock<Duration>
     private let makeSocket: SocketFactory
     private var builder = SnapshotBuilder()
 
@@ -18,8 +19,9 @@ actor HyperliquidFeed: OrderBookFeed {
     private var connection: Task<Void, Never>?
     private var socket: (any SocketTransport)?
     private var isOpen = false
-    private var lastReceived = ContinuousClock.now
-    private var lastSent = ContinuousClock.now
+    /// Time since the last inbound frame and the last outbound one, advanced by the heartbeat.
+    private var silence: Duration = .zero
+    private var sinceLastSend: Duration = .zero
 
     private var wanted: BookSubscription?
     private var confirmed: BookSubscription?
@@ -33,10 +35,12 @@ actor HyperliquidFeed: OrderBookFeed {
     init(
         url: URL = HyperliquidFeed.url,
         policy: ReconnectPolicy = ReconnectPolicy(),
+        clock: any Clock<Duration>,
         makeSocket: @escaping SocketFactory = { URLSessionSocket(url: $0) }
     ) {
         self.url = url
         self.policy = policy
+        self.clock = clock
         self.makeSocket = makeSocket
     }
 
@@ -91,8 +95,8 @@ actor HyperliquidFeed: OrderBookFeed {
                 try Task.checkCancellation()
                 attempt = 0
                 isOpen = true
-                lastReceived = .now
-                lastSent = .now
+                silence = .zero
+                sinceLastSend = .zero
                 Log.feed.info("Connected to \(self.url.host() ?? "", privacy: .public)")
                 emit(.status(.connected))
                 await reconcile()
@@ -122,26 +126,27 @@ actor HyperliquidFeed: OrderBookFeed {
             let delay = policy.delay(forAttempt: attempt, jitter: .random(in: policy.jitterRange))
             Log.feed.info("Reconnect attempt \(attempt) in \(delay, privacy: .public)")
             emit(.status(.reconnecting(attempt: attempt, delay: delay)))
-            try? await Task.sleep(for: delay)
+            try? await clock.sleep(for: delay)
         }
     }
 
     private func receiveLoop(_ socket: any SocketTransport) async throws {
         while true {
             let text = try await socket.receive()
-            lastReceived = .now
+            silence = .zero
             await handle(text)
         }
     }
 
     private func heartbeatLoop(_ socket: any SocketTransport) async throws {
         while true {
-            try await Task.sleep(for: policy.checkInterval)
-            let now = ContinuousClock.now
-            if now - lastReceived >= policy.receiveTimeout {
+            try await clock.sleep(for: policy.checkInterval)
+            silence += policy.checkInterval
+            sinceLastSend += policy.checkInterval
+            if silence >= policy.receiveTimeout {
                 throw SocketError.silent(for: policy.receiveTimeout)
             }
-            if now - lastSent >= policy.pingInterval {
+            if sinceLastSend >= policy.pingInterval {
                 try await send(ClientMessage.ping, over: socket)
             }
         }
@@ -149,7 +154,7 @@ actor HyperliquidFeed: OrderBookFeed {
 
     private func send(_ text: String, over socket: any SocketTransport) async throws {
         try await socket.send(text)
-        lastSent = .now
+        sinceLastSend = .zero
     }
 
     private func emit(_ event: FeedEvent) {
