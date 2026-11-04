@@ -32,7 +32,7 @@ widget renders. The demo app embeds it under a market header card, the way a tra
   below, in one natively scrolling column centred on the spread. Tap the spread to recentre.
 - **Live trades.** A Book/Trades control switches to the trade stream: price, size and time, newest
   on top, coloured by the taker's side. It shares the book's socket and follows its market.
-- **Native controls.** A segmented picker for BTC/ETH, a menu picker for price grouping (`nSigFigs`,
+- **Native controls.** A menu picker for BTC/ETH, a matching one for price grouping (`nSigFigs`,
   labelled by the tick it produces: $0.1, $1, $10, ...), and a coin/USD size toggle. All persist.
 - **Change feedback.** Rows flash green when size grows, red when it shrinks, white for a new level.
   The mid price rolls with a numeric transition and takes the colour of its last move. The status
@@ -68,7 +68,7 @@ OrderBookWidget (public View)
 | `Networking` | wire messages, `SocketTransport`, `OrderBookFeed`, `HyperliquidFeed`, `SubscriptionLedger`, `HyperliquidInfoClient` |
 | `Persistence` | `SelectionStoring` with UserDefaults and in-memory stores |
 | `ViewModels` | `OrderBookViewModel` |
-| `Views` | header, pane picker, column header, book list, side, row, depth bar, spread row, trade list, trade row, footer, `A11yID`, preview feed |
+| `Views` | header, controls row, market and precision menus, column header, book list, side, row, depth bar, spread row, trade list, trade row, footer, `A11yID`, preview feed |
 | `Views/Tokens` | `Spacing`, `Radius`, `Opacity`, `Motion`, `Layout`, `Glyph`, `Palette` |
 | `Resources` | String Catalog, privacy manifest |
 | `WidgetExtension/` | `BookWidget`, its intent configuration, timeline provider and entry view |

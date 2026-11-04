@@ -20,7 +20,7 @@ public struct OrderBookWidget: View {
     public var body: some View {
         VStack(spacing: 0) {
             BookHeaderView(viewModel: viewModel)
-            PanePickerView(viewModel: viewModel)
+            BookControlsView(viewModel: viewModel)
             ColumnHeaderView(coin: viewModel.symbol.coin, unit: viewModel.sizeUnit, pane: viewModel.pane)
             switch viewModel.pane {
             case .book:
