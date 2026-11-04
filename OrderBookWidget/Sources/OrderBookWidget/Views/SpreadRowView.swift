@@ -34,7 +34,7 @@ struct SpreadRowView: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
-        .background(Color(uiColor: .secondarySystemBackground))
+        .background(Color.primary.opacity(0.06))
         .contentShape(.rect)
     }
 }
