@@ -32,7 +32,7 @@ struct BookEntryView: View {
                     Text(book.midLabel)
                         .font(.footnote.weight(.semibold).monospacedDigit())
                     Spacer()
-                    Text("\(book.spreadLabel) · \(book.spreadBpsLabel) bps")
+                    Text(family == .systemSmall ? book.spreadLabel : "\(book.spreadLabel) · \(book.spreadBpsLabel) bps")
                         .font(.caption2.monospacedDigit())
                         .foregroundStyle(.secondary)
                 }
