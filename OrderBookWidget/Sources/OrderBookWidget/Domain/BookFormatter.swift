@@ -4,6 +4,8 @@ import Foundation
 /// the main thread and views never touch a number formatter.
 struct BookFormatter: Sendable {
     static let maxFractionDigits = 9
+    /// Shown wherever a number is not available yet.
+    static let placeholder = "–"
 
     private let locale: Locale
 
@@ -12,13 +14,13 @@ struct BookFormatter: Sendable {
     }
 
     func decimal(_ value: Double, fractionDigits: Int) -> String {
-        guard value.isFinite else { return "–" }
+        guard value.isFinite else { return Self.placeholder }
         return value.formatted(.number.precision(.fractionLength(fractionDigits)).locale(locale))
     }
 
     /// Dollar amounts at a glance: "$842", "$12.3K", "$1.92M".
     func compactUSD(_ value: Double) -> String {
-        guard value.isFinite else { return "–" }
+        guard value.isFinite else { return Self.placeholder }
         if value < 999.5 {
             return "$" + decimal(value, fractionDigits: 0)
         }

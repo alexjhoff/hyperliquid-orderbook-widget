@@ -18,7 +18,7 @@ struct BookEntryView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
             HStack {
-                Text("\(entry.symbol.coin)-USD")
+                Text(verbatim: entry.symbol.pair)
                     .font(.caption.weight(.semibold))
                 Spacer()
                 Text(entry.date, style: .time)
@@ -29,10 +29,10 @@ struct BookEntryView: View {
             if let book = entry.snapshot {
                 ForEach(book.asks.prefix(rowsPerSide).reversed()) { row($0, side: .ask) }
                 HStack(alignment: .firstTextBaseline) {
-                    Text(book.midLabel)
+                    Text(verbatim: book.midLabel)
                         .font(.footnote.weight(.semibold).monospacedDigit())
                     Spacer()
-                    Text(family == .systemSmall ? book.spreadLabel : "\(book.spreadLabel) · \(book.spreadBpsLabel) bps")
+                    spreadText(book)
                         .font(.caption2.monospacedDigit())
                         .foregroundStyle(.secondary)
                 }
@@ -50,11 +50,15 @@ struct BookEntryView: View {
         .widgetURL(URL(string: "orderbook://book?coin=\(entry.symbol.coin)"))
     }
 
+    private func spreadText(_ book: BookSnapshot) -> Text {
+        family == .systemSmall ? Text(verbatim: book.spreadLabel) : Text("\(book.spreadLabel) · \(book.spreadBpsLabel) bps")
+    }
+
     private func row(_ level: BookLevel, side: Side) -> some View {
         HStack {
-            Text(level.labels.price).foregroundStyle(side.tint)
+            Text(verbatim: level.labels.price).foregroundStyle(side.tint)
             Spacer()
-            Text(level.labels.size)
+            Text(verbatim: level.labels.size)
         }
         .font(.caption2.monospacedDigit())
         .lineLimit(1)

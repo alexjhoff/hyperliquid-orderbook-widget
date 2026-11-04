@@ -8,9 +8,11 @@ struct BookFooterView: View {
         HStack {
             PrecisionMenu(selection: $viewModel.precision, mid: viewModel.book?.mid)
             Spacer()
-            Picker("Size unit", selection: $viewModel.sizeUnit) {
-                Text(viewModel.symbol.coin).tag(SizeUnit.coin)
-                Text("USD").tag(SizeUnit.usd)
+            Picker(selection: $viewModel.sizeUnit) {
+                Text(verbatim: viewModel.symbol.coin).tag(SizeUnit.coin)
+                Text(verbatim: Symbol.quoteCurrency).tag(SizeUnit.usd)
+            } label: {
+                Text("Size unit", bundle: .module)
             }
             .pickerStyle(.segmented)
             .fixedSize()
@@ -28,21 +30,23 @@ private struct PrecisionMenu: View {
 
     var body: some View {
         Menu {
-            Picker("Price grouping", selection: $selection) {
+            Picker(selection: $selection) {
                 ForEach(Precision.allCases) { option in
-                    Text("\(PrecisionPresentation.tickLabel(for: option, near: mid))  ·  \(option.name)").tag(option)
+                    Text("\(PrecisionPresentation.tickLabel(for: option, near: mid))  ·  \(option.name)", bundle: .module).tag(option)
                 }
+            } label: {
+                Text("Price grouping", bundle: .module)
             }
             .pickerStyle(.inline)
         } label: {
             HStack(spacing: 6) {
                 Image(systemName: "square.stack.3d.down.right")
-                Text(PrecisionPresentation.tickLabel(for: selection, near: mid)).monospacedDigit()
+                Text(verbatim: PrecisionPresentation.tickLabel(for: selection, near: mid)).monospacedDigit()
             }
             .font(.subheadline.weight(.medium))
         }
-        .accessibilityLabel("Price grouping")
-        .accessibilityValue("\(PrecisionPresentation.tickLabel(for: selection, near: mid)), \(selection.name)")
+        .accessibilityLabel(Text("Price grouping", bundle: .module))
+        .accessibilityValue(Text("\(PrecisionPresentation.tickLabel(for: selection, near: mid)), \(selection.name)", bundle: .module))
         .accessibilityIdentifier("precisionMenu")
     }
 }

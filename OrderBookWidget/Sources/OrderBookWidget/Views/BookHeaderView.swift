@@ -6,10 +6,12 @@ struct BookHeaderView: View {
 
     var body: some View {
         HStack {
-            Picker("Market", selection: $viewModel.symbol) {
+            Picker(selection: $viewModel.symbol) {
                 ForEach(Symbol.allCases) { symbol in
-                    Text(symbol.coin).tag(symbol)
+                    Text(verbatim: symbol.coin).tag(symbol)
                 }
+            } label: {
+                Text("Market", bundle: .module)
             }
             .pickerStyle(.segmented)
             .frame(maxWidth: 180)
@@ -37,13 +39,13 @@ private struct ConnectionStatusView: View {
                 Circle()
                     .fill(tint(presentation.tone))
                     .frame(width: 7, height: 7)
-                Text(presentation.label)
+                Text(verbatim: presentation.label)
                     .monospacedDigit()
             }
             .font(.caption.weight(.medium))
             .foregroundStyle(.secondary)
             .accessibilityElement(children: .combine)
-            .accessibilityLabel("Connection, \(presentation.label)")
+            .accessibilityLabel(Text("Connection, \(presentation.label)", bundle: .module))
         }
     }
 

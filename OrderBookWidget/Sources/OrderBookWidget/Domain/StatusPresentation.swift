@@ -17,26 +17,26 @@ struct StatusPresentation: Equatable {
         switch status {
         case .connected:
             if let bookAge, bookAge >= 3 {
-                label = "\(Int(bookAge))s ago"
+                label = String(localized: "\(Int(bookAge))s ago", bundle: .module)
                 tone = bookAge >= 15 ? .quiet : .live
             } else {
-                label = "Live"
+                label = String(localized: "Live", bundle: .module)
                 tone = .live
             }
         case .connecting:
-            label = "Connecting"
+            label = String(localized: "Connecting", bundle: .module)
             tone = .busy
         case .reconnecting(let attempt, let delay):
             let remaining = delay / .seconds(1) - statusAge
             if remaining >= 0.5 {
-                let countdown = "Retry in \(Int(remaining.rounded(.up)))s"
-                label = attempt > 1 ? "\(countdown) · #\(attempt)" : countdown
+                let countdown = String(localized: "Retry in \(Int(remaining.rounded(.up)))s", bundle: .module)
+                label = attempt > 1 ? String(localized: "\(countdown) · #\(attempt)", bundle: .module) : countdown
             } else {
-                label = "Reconnecting"
+                label = String(localized: "Reconnecting", bundle: .module)
             }
             tone = .busy
         case .disconnected:
-            label = "Offline"
+            label = String(localized: "Offline", bundle: .module)
             tone = .offline
         }
     }

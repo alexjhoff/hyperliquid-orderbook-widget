@@ -22,7 +22,8 @@ public enum Precision: String, CaseIterable, Identifiable, Sendable {
     }
 
     public var name: String {
-        nSigFigs.map { "\($0) sig figs" } ?? "Full precision"
+        guard let nSigFigs else { return String(localized: "Full precision", bundle: .module) }
+        return String(localized: "\(nSigFigs) sig figs", bundle: .module)
     }
 
     /// Price increment this grouping produces near `price`: 4 sig figs at 77,719 gives 10.

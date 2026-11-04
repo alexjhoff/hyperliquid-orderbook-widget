@@ -19,13 +19,13 @@ struct BookRowView: View, Equatable {
 
     var body: some View {
         HStack(spacing: 8) {
-            Text(level.labels.price)
+            Text(verbatim: level.labels.price)
                 .foregroundStyle(side.tint)
                 .fontWeight(.medium)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Text(level.label(size: unit))
+            Text(verbatim: level.label(size: unit))
                 .frame(maxWidth: .infinity, alignment: .trailing)
-            Text(level.label(total: unit))
+            Text(verbatim: level.label(total: unit))
                 .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity, alignment: .trailing)
         }
@@ -54,7 +54,8 @@ struct BookRowView: View, Equatable {
             if level.change == .new, level.flashToken > 0 { flash() }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(side.name) \(level.labels.price), size \(level.label(size: unit)), total \(level.label(total: unit))")
+        .accessibilityLabel(
+            Text("\(side.name) \(level.labels.price), size \(level.label(size: unit)), total \(level.label(total: unit))", bundle: .module))
     }
 
     private func flash() {
@@ -76,9 +77,9 @@ struct EmptyRow: View {
 
     var body: some View {
         HStack {
-            Text("–").frame(maxWidth: .infinity, alignment: .leading)
-            Text("–").frame(maxWidth: .infinity, alignment: .trailing)
-            Text("–").frame(maxWidth: .infinity, alignment: .trailing)
+            Text(verbatim: BookFormatter.placeholder).frame(maxWidth: .infinity, alignment: .leading)
+            Text(verbatim: BookFormatter.placeholder).frame(maxWidth: .infinity, alignment: .trailing)
+            Text(verbatim: BookFormatter.placeholder).frame(maxWidth: .infinity, alignment: .trailing)
         }
         .font(.footnote)
         .foregroundStyle(.quaternary)

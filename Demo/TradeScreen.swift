@@ -30,6 +30,9 @@ private struct DeepLink {
 }
 
 private struct MarketHeader: View {
+    /// A mock value: the demo has no account or positions.
+    private static let leverageLabel = "10×"
+
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: "chart.line.uptrend.xyaxis.circle.fill")
@@ -43,7 +46,7 @@ private struct MarketHeader: View {
                     .foregroundStyle(.secondary)
             }
             Spacer()
-            Text("10×")
+            Text(verbatim: Self.leverageLabel)
                 .font(.subheadline.weight(.semibold))
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)

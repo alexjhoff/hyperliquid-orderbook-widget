@@ -15,7 +15,7 @@ struct SpreadRowView: View {
             }
 
         HStack(alignment: .firstTextBaseline, spacing: 6) {
-            Text(book?.midLabel ?? "–")
+            Text(verbatim: book?.midLabel ?? BookFormatter.placeholder)
                 .font(.title3.weight(.semibold).monospacedDigit())
                 .foregroundStyle(tint)
                 .contentTransition(reduceMotion ? .identity : .numericText(value: book?.mid ?? 0))
@@ -26,10 +26,10 @@ struct SpreadRowView: View {
                 .opacity(trend == .flat ? 0 : 1)
             Spacer(minLength: 8)
             VStack(alignment: .trailing, spacing: 1) {
-                Text("Spread")
+                Text("Spread", bundle: .module)
                     .font(.caption2)
                     .foregroundStyle(.secondary)
-                Text("\(book?.spreadLabel ?? "–") · \(book?.spreadBpsLabel ?? "–") bps")
+                Text("\(book?.spreadLabel ?? BookFormatter.placeholder) · \(book?.spreadBpsLabel ?? BookFormatter.placeholder) bps", bundle: .module)
                     .font(.caption.monospacedDigit())
             }
         }
@@ -38,19 +38,20 @@ struct SpreadRowView: View {
         .background(Color.primary.opacity(0.06))
         .contentShape(.rect)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(accessibilityText)
-        .accessibilityHint("Double tap to recentre the book")
+        .accessibilityLabel(Text(verbatim: accessibilityText))
+        .accessibilityHint(Text("Double tap to recentre the book", bundle: .module))
         .accessibilityAddTraits(.isButton)
     }
 
     private var accessibilityText: String {
-        guard let book else { return "Loading order book" }
-        let direction =
-            switch book.trend {
-            case .up: ", up"
-            case .down: ", down"
-            case .flat: ""
-            }
-        return "Mid price \(book.midLabel)\(direction), spread \(book.spreadLabel), \(book.spreadBpsLabel) basis points"
+        guard let book else { return String(localized: "Loading order book", bundle: .module) }
+        return switch book.trend {
+        case .up:
+            String(localized: "Mid price \(book.midLabel), up, spread \(book.spreadLabel), \(book.spreadBpsLabel) basis points", bundle: .module)
+        case .down:
+            String(localized: "Mid price \(book.midLabel), down, spread \(book.spreadLabel), \(book.spreadBpsLabel) basis points", bundle: .module)
+        case .flat:
+            String(localized: "Mid price \(book.midLabel), spread \(book.spreadLabel), \(book.spreadBpsLabel) basis points", bundle: .module)
+        }
     }
 }

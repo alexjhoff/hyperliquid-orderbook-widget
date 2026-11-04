@@ -3,12 +3,13 @@ import PackageDescription
 
 let package = Package(
     name: "OrderBookWidget",
+    defaultLocalization: "en",
     platforms: [.iOS(.v26)],
     products: [
         .library(name: "OrderBookWidget", targets: ["OrderBookWidget"])
     ],
     targets: [
-        .target(name: "OrderBookWidget"),
+        .target(name: "OrderBookWidget", resources: [.process("Resources")]),
         .testTarget(name: "OrderBookWidgetTests", dependencies: ["OrderBookWidget"]),
     ]
 )
