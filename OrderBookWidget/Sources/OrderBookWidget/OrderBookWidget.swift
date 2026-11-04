@@ -31,6 +31,8 @@ public struct OrderBookWidget: View {
         .sensoryFeedback(.selection, trigger: viewModel.symbol)
         .sensoryFeedback(.selection, trigger: viewModel.precision)
         .sensoryFeedback(.selection, trigger: viewModel.sizeUnit)
+        // Three numeric columns stop fitting past this size.
+        .dynamicTypeSize(...DynamicTypeSize.xxLarge)
         .onChange(of: scenePhase) { _, phase in
             switch phase {
             case .background: Task { await viewModel.disconnect() }

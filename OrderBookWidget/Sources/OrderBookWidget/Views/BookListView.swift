@@ -13,6 +13,7 @@ struct BookListView: View {
     private static let spreadID = "spread"
 
     @ScaledMetric(relativeTo: .footnote) private var rowHeight: CGFloat = 22
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var recentreRequests = 0
 
     var body: some View {
@@ -35,7 +36,7 @@ struct BookListView: View {
                 proxy.scrollTo(Self.spreadID, anchor: .center)
             }
             .onChange(of: recentreRequests) {
-                withAnimation(.smooth) { proxy.scrollTo(Self.spreadID, anchor: .center) }
+                withAnimation(reduceMotion ? nil : .smooth) { proxy.scrollTo(Self.spreadID, anchor: .center) }
             }
         }
         .sensoryFeedback(.impact(weight: .light), trigger: recentreRequests)
@@ -44,6 +45,6 @@ struct BookListView: View {
     /// Rows keyed by price slide to their new slot when the market moves. The first snapshot of a
     /// subscription replaces the book outright instead of sliding every row.
     private var rowAnimation: Animation? {
-        (book?.sequence ?? 0) > 1 ? .smooth(duration: 0.28) : nil
+        !reduceMotion && (book?.sequence ?? 0) > 1 ? .smooth(duration: 0.28) : nil
     }
 }

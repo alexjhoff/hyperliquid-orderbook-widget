@@ -3,6 +3,7 @@ import SwiftUI
 /// The centre line: mid price with its last direction, and the spread in price and basis points.
 struct SpreadRowView: View {
     let book: BookSnapshot?
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         let trend = book?.trend ?? .flat
@@ -17,8 +18,8 @@ struct SpreadRowView: View {
             Text(book?.midLabel ?? "–")
                 .font(.title3.weight(.semibold).monospacedDigit())
                 .foregroundStyle(tint)
-                .contentTransition(.numericText(value: book?.mid ?? 0))
-                .animation(.snappy, value: book?.mid)
+                .contentTransition(reduceMotion ? .identity : .numericText(value: book?.mid ?? 0))
+                .animation(reduceMotion ? nil : .snappy, value: book?.mid)
             Image(systemName: trend == .down ? "arrow.down" : "arrow.up")
                 .font(.caption.weight(.bold))
                 .foregroundStyle(tint)
@@ -36,5 +37,20 @@ struct SpreadRowView: View {
         .padding(.vertical, 8)
         .background(Color.primary.opacity(0.06))
         .contentShape(.rect)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(accessibilityText)
+        .accessibilityHint("Double tap to recentre the book")
+        .accessibilityAddTraits(.isButton)
+    }
+
+    private var accessibilityText: String {
+        guard let book else { return "Loading order book" }
+        let direction =
+            switch book.trend {
+            case .up: ", up"
+            case .down: ", down"
+            case .flat: ""
+            }
+        return "Mid price \(book.midLabel)\(direction), spread \(book.spreadLabel), \(book.spreadBpsLabel) basis points"
     }
 }

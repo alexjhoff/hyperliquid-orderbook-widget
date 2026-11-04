@@ -11,6 +11,7 @@ struct BookRowView: View, Equatable {
 
     @State private var flashTrigger = 0
     @State private var flashTint = Color.clear
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     nonisolated static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.level == rhs.level && lhs.side == rhs.side && lhs.unit == rhs.unit && lhs.height == rhs.height
@@ -52,9 +53,12 @@ struct BookRowView: View, Equatable {
         .onAppear {
             if level.change == .new, level.flashToken > 0 { flash() }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(side.name) \(level.labels.price), size \(level.label(size: unit)), total \(level.label(total: unit))")
     }
 
     private func flash() {
+        guard !reduceMotion else { return }
         flashTint =
             switch level.change {
             case .increased: .bid
