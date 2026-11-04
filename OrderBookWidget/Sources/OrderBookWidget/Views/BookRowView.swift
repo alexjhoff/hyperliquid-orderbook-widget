@@ -18,7 +18,7 @@ struct BookRowView: View, Equatable {
     }
 
     var body: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: Spacing.m) {
             Text(verbatim: level.labels.price)
                 .foregroundStyle(side.tint)
                 .fontWeight(.medium)
@@ -31,20 +31,18 @@ struct BookRowView: View, Equatable {
         }
         .font(.footnote.monospacedDigit())
         .lineLimit(1)
-        .minimumScaleFactor(0.8)
-        .padding(.horizontal, 12)
+        .minimumScaleFactor(Layout.minimumTextScale)
+        .padding(.horizontal, Spacing.l)
         .frame(height: height)
         // The flash sits behind the text so a burst of updates never makes prices harder to read.
         .background {
             Rectangle()
                 .fill(flashTint)
-                // Shorter than the feed's 0.5 s push interval, so a busy level reads as a series
-                // of pulses rather than a permanent tint.
                 .keyframeAnimator(initialValue: 0.0, trigger: flashTrigger) { flash, opacity in
                     flash.opacity(opacity)
                 } keyframes: { _ in
-                    LinearKeyframe(0.3, duration: 0.04)
-                    LinearKeyframe(0, duration: 0.36, timingCurve: .easeOut)
+                    LinearKeyframe(Opacity.flashPeak, duration: Motion.flashIn)
+                    LinearKeyframe(0, duration: Motion.flashOut, timingCurve: .easeOut)
                 }
                 .allowsHitTesting(false)
         }
@@ -83,7 +81,7 @@ struct EmptyRow: View {
         }
         .font(.footnote)
         .foregroundStyle(.quaternary)
-        .padding(.horizontal, 12)
+        .padding(.horizontal, Spacing.l)
         .frame(height: height)
         .accessibilityHidden(true)
     }

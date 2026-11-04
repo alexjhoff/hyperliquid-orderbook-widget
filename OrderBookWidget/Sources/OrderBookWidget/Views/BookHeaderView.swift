@@ -14,13 +14,13 @@ struct BookHeaderView: View {
                 Text("Market", bundle: .module)
             }
             .pickerStyle(.segmented)
-            .frame(maxWidth: 180)
-            .accessibilityIdentifier("symbolPicker")
+            .frame(maxWidth: Layout.symbolPickerWidth)
+            .accessibilityIdentifier(A11yID.symbolPicker)
             Spacer()
             ConnectionStatusView(viewModel: viewModel)
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
+        .padding(.horizontal, Spacing.l)
+        .padding(.vertical, Spacing.m)
     }
 }
 
@@ -35,10 +35,10 @@ private struct ConnectionStatusView: View {
                 bookAge: viewModel.book.map { context.date.timeIntervalSince($0.receivedAt) },
                 statusAge: context.date.timeIntervalSince(viewModel.statusChangedAt)
             )
-            HStack(spacing: 6) {
+            HStack(spacing: Spacing.s) {
                 Circle()
                     .fill(tint(presentation.tone))
-                    .frame(width: 7, height: 7)
+                    .frame(width: Layout.statusDot, height: Layout.statusDot)
                 Text(verbatim: presentation.label)
                     .monospacedDigit()
             }

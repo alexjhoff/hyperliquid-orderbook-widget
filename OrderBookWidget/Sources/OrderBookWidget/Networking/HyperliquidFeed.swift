@@ -119,7 +119,7 @@ actor HyperliquidFeed: OrderBookFeed {
             guard !Task.isCancelled else { return }
 
             attempt += 1
-            let delay = policy.delay(forAttempt: attempt, jitter: .random(in: 0.5...1))
+            let delay = policy.delay(forAttempt: attempt, jitter: .random(in: policy.jitterRange))
             Log.feed.info("Reconnect attempt \(attempt) in \(delay, privacy: .public)")
             emit(.status(.reconnecting(attempt: attempt, delay: delay)))
             try? await Task.sleep(for: delay)

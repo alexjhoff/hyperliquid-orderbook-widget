@@ -14,18 +14,18 @@ struct SpreadRowView: View {
             case .flat: .primary
             }
 
-        HStack(alignment: .firstTextBaseline, spacing: 6) {
+        HStack(alignment: .firstTextBaseline, spacing: Spacing.s) {
             Text(verbatim: book?.midLabel ?? BookFormatter.placeholder)
                 .font(.title3.weight(.semibold).monospacedDigit())
                 .foregroundStyle(tint)
                 .contentTransition(reduceMotion ? .identity : .numericText(value: book?.mid ?? 0))
                 .animation(reduceMotion ? nil : .snappy, value: book?.mid)
-            Image(systemName: trend == .down ? "arrow.down" : "arrow.up")
+            Image(systemName: trend == .down ? Glyph.trendDown : Glyph.trendUp)
                 .font(.caption.weight(.bold))
                 .foregroundStyle(tint)
                 .opacity(trend == .flat ? 0 : 1)
-            Spacer(minLength: 8)
-            VStack(alignment: .trailing, spacing: 1) {
+            Spacer(minLength: Spacing.m)
+            VStack(alignment: .trailing, spacing: Spacing.hairline) {
                 Text("Spread", bundle: .module)
                     .font(.caption2)
                     .foregroundStyle(.secondary)
@@ -33,9 +33,9 @@ struct SpreadRowView: View {
                     .font(.caption.monospacedDigit())
             }
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .background(Color.primary.opacity(0.06))
+        .padding(.horizontal, Spacing.l)
+        .padding(.vertical, Spacing.m)
+        .background(Color.primary.opacity(Opacity.spreadBackground))
         .contentShape(.rect)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: accessibilityText))

@@ -10,33 +10,39 @@ protocol SelectionStoring: AnyObject {
 /// Persists selections in `UserDefaults` under keys prefixed so they never collide with the host app's.
 final class UserDefaultsSelectionStore: SelectionStoring {
     private let defaults: UserDefaults
-    private static let prefix = "orderBookWidget."
+
+    private enum Key {
+        static let prefix = "orderBookWidget."
+        static let symbol = "symbol"
+        static let precision = "precision"
+        static let sizeUnit = "sizeUnit"
+    }
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
     }
 
     var symbol: Symbol? {
-        get { read("symbol") }
-        set { write(newValue, "symbol") }
+        get { read(Key.symbol) }
+        set { write(newValue, Key.symbol) }
     }
 
     var precision: Precision? {
-        get { read("precision") }
-        set { write(newValue, "precision") }
+        get { read(Key.precision) }
+        set { write(newValue, Key.precision) }
     }
 
     var sizeUnit: SizeUnit? {
-        get { read("sizeUnit") }
-        set { write(newValue, "sizeUnit") }
+        get { read(Key.sizeUnit) }
+        set { write(newValue, Key.sizeUnit) }
     }
 
     private func read<Value: RawRepresentable<String>>(_ key: String) -> Value? {
-        defaults.string(forKey: Self.prefix + key).flatMap(Value.init(rawValue:))
+        defaults.string(forKey: Key.prefix + key).flatMap(Value.init(rawValue:))
     }
 
     private func write<Value: RawRepresentable<String>>(_ value: Value?, _ key: String) {
-        defaults.set(value?.rawValue, forKey: Self.prefix + key)
+        defaults.set(value?.rawValue, forKey: Key.prefix + key)
     }
 }
 

@@ -87,8 +87,10 @@ struct SnapshotBuilder: Sendable {
 
     /// Bars are a few hundred points wide at most, so 1/512 is below a pixel. Rounding to it means a
     /// row whose bar would not visibly move compares equal to its previous value and skips `body`.
+    private static let depthResolution = 512.0
+
     private static func quantise(_ fraction: Double) -> Double {
-        (fraction * 512).rounded() / 512
+        (fraction * depthResolution).rounded() / depthResolution
     }
 
     private func finalize(_ raw: [RawLevel], previous: [BookLevel], context: SideContext) -> [BookLevel] {

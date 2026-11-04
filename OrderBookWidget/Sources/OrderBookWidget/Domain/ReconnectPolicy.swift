@@ -8,12 +8,16 @@ struct ReconnectPolicy: Sendable {
     /// A socket that stays silent this long is treated as dead, which catches half-open connections.
     var receiveTimeout: Duration = .seconds(30)
     var checkInterval: Duration = .seconds(5)
+    /// Multiplier applied to each delay so clients do not all retry in the same instant.
+    var jitterRange: ClosedRange<Double> = 0.5...1
+    /// Caps `1 << exponent` well inside Int.
+    private static let maxExponent = 16
 
     /// - Parameters:
     ///   - attempt: 1 for the first retry.
-    ///   - jitter: multiplier in 0.5...1, randomised by the caller to spread out reconnect storms.
+    ///   - jitter: multiplier in `jitterRange`, randomised by the caller to spread out reconnect storms.
     func delay(forAttempt attempt: Int, jitter: Double) -> Duration {
-        let exponent = min(max(attempt - 1, 0), 16)
-        return min(base * (1 << exponent), cap) * min(max(jitter, 0.5), 1)
+        let exponent = min(max(attempt - 1, 0), Self.maxExponent)
+        return min(base * (1 << exponent), cap) * min(max(jitter, jitterRange.lowerBound), jitterRange.upperBound)
     }
 }

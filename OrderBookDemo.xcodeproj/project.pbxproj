@@ -14,7 +14,6 @@
 		37890A434CBBF729115DAD35 /* DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A94456A675148C9ADE4ACF63 /* DemoApp.swift */; };
 		3EE63014D679A100F3832846 /* TradeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1011712E8362054314EAB7D /* TradeScreen.swift */; };
 		41AEEA5429364784EFC1EB86 /* BookWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91AEEB7E94E74A587305422B /* BookWidget.swift */; };
-		4943B3731F9B98A1D9AF5B06 /* DeepLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FABE2E65E3AFE0017C509F /* DeepLinkRouter.swift */; };
 		58F6F33099AEDB276D3235C0 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 536D05486C2C71B720C853C6 /* PrivacyInfo.xcprivacy */; };
 		85A4035E3B31001439239DC2 /* BookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FD873398795212AF2436E33 /* BookEntry.swift */; };
 		8945550A80C3E17828F6D065 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 9CEB5390DA226E7C7B8E5A7F /* Localizable.xcstrings */; };
@@ -70,7 +69,6 @@
 		D85C2719788733D207122B79 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		ED901381D0D5BC79C2A03DED /* OrderBookWidgetExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = OrderBookWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1011712E8362054314EAB7D /* TradeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TradeScreen.swift; sourceTree = "<group>"; };
-		F9FABE2E65E3AFE0017C509F /* DeepLinkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkRouter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,7 +114,6 @@
 			isa = PBXGroup;
 			children = (
 				B35549383BC81B7DE775EEC6 /* Assets.xcassets */,
-				F9FABE2E65E3AFE0017C509F /* DeepLinkRouter.swift */,
 				A94456A675148C9ADE4ACF63 /* DemoApp.swift */,
 				56070B5C80C68FD41D1056C4 /* Info.plist */,
 				1A29DD85EC121D534FB0CBBD /* Localizable.xcstrings */,
@@ -286,7 +283,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4943B3731F9B98A1D9AF5B06 /* DeepLinkRouter.swift in Sources */,
 				37890A434CBBF729115DAD35 /* DemoApp.swift in Sources */,
 				3EE63014D679A100F3832846 /* TradeScreen.swift in Sources */,
 			);

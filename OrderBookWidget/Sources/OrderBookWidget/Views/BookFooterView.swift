@@ -16,10 +16,10 @@ struct BookFooterView: View {
             }
             .pickerStyle(.segmented)
             .fixedSize()
-            .accessibilityIdentifier("unitPicker")
+            .accessibilityIdentifier(A11yID.unitPicker)
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
+        .padding(.horizontal, Spacing.l)
+        .padding(.vertical, Spacing.m)
     }
 }
 
@@ -39,14 +39,14 @@ private struct PrecisionMenu: View {
             }
             .pickerStyle(.inline)
         } label: {
-            HStack(spacing: 6) {
-                Image(systemName: "square.stack.3d.down.right")
+            HStack(spacing: Spacing.s) {
+                Image(systemName: Glyph.grouping)
                 Text(verbatim: PrecisionPresentation.tickLabel(for: selection, near: mid)).monospacedDigit()
             }
             .font(.subheadline.weight(.medium))
         }
         .accessibilityLabel(Text("Price grouping", bundle: .module))
         .accessibilityValue(Text("\(PrecisionPresentation.tickLabel(for: selection, near: mid)), \(selection.name)", bundle: .module))
-        .accessibilityIdentifier("precisionMenu")
+        .accessibilityIdentifier(A11yID.precisionMenu)
     }
 }

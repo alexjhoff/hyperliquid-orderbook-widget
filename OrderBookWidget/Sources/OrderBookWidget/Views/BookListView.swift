@@ -12,7 +12,7 @@ struct BookListView: View {
     nonisolated static let depth = 20
     private static let spreadID = "spread"
 
-    @ScaledMetric(relativeTo: .footnote) private var rowHeight: CGFloat = 22
+    @ScaledMetric(relativeTo: .footnote) private var rowHeight = Layout.rowHeight
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var recentreRequests = 0
 
@@ -26,9 +26,9 @@ struct BookListView: View {
                         .onTapGesture { recentreRequests += 1 }
                     BookSideView(side: .bid, levels: book?.bids ?? [], unit: unit, depth: Self.depth, rowHeight: rowHeight)
                 }
-                .opacity(isStale && book != nil ? 0.45 : 1)
+                .opacity(isStale && book != nil ? Opacity.stale : 1)
                 .animation(rowAnimation, value: book?.sequence)
-                .animation(.easeOut(duration: 0.2), value: isStale)
+                .animation(.easeOut(duration: Motion.staleFade), value: isStale)
             }
             .defaultScrollAnchor(.center)
             .scrollIndicators(.hidden)
@@ -45,6 +45,6 @@ struct BookListView: View {
     /// Rows keyed by price slide to their new slot when the market moves. The first snapshot of a
     /// subscription replaces the book outright instead of sliding every row.
     private var rowAnimation: Animation? {
-        !reduceMotion && (book?.sequence ?? 0) > 1 ? .smooth(duration: 0.28) : nil
+        !reduceMotion && (book?.sequence ?? 0) > 1 ? .smooth(duration: Motion.rowSlide) : nil
     }
 }

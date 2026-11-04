@@ -6,6 +6,8 @@ struct BookFormatter: Sendable {
     static let maxFractionDigits = 9
     /// Shown wherever a number is not available yet.
     static let placeholder = "–"
+    /// Dollar amounts from here up read as "$1.23K" rather than "$1,234".
+    private static let compactFrom = 999.5
 
     private let locale: Locale
 
@@ -21,7 +23,7 @@ struct BookFormatter: Sendable {
     /// Dollar amounts at a glance: "$842", "$12.3K", "$1.92M".
     func compactUSD(_ value: Double) -> String {
         guard value.isFinite else { return Self.placeholder }
-        if value < 999.5 {
+        if value < Self.compactFrom {
             return "$" + decimal(value, fractionDigits: 0)
         }
         return "$" + value.formatted(.number.notation(.compactName).precision(.significantDigits(3)).locale(locale))

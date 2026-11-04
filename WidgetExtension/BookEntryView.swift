@@ -16,7 +16,7 @@ struct BookEntryView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 3) {
+        VStack(alignment: .leading, spacing: Spacing.xxs) {
             HStack {
                 Text(verbatim: entry.symbol.pair)
                     .font(.caption.weight(.semibold))
@@ -25,7 +25,7 @@ struct BookEntryView: View {
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
-            .padding(.bottom, 2)
+            .padding(.bottom, Spacing.xxs)
             if let book = entry.snapshot {
                 ForEach(book.asks.prefix(rowsPerSide).reversed()) { row($0, side: .ask) }
                 HStack(alignment: .firstTextBaseline) {
@@ -36,7 +36,7 @@ struct BookEntryView: View {
                         .font(.caption2.monospacedDigit())
                         .foregroundStyle(.secondary)
                 }
-                .padding(.vertical, 2)
+                .padding(.vertical, Spacing.xxs)
                 ForEach(book.bids.prefix(rowsPerSide)) { row($0, side: .bid) }
             } else {
                 Spacer()
@@ -47,7 +47,7 @@ struct BookEntryView: View {
             }
         }
         .containerBackground(.fill.tertiary, for: .widget)
-        .widgetURL(URL(string: "orderbook://book?coin=\(entry.symbol.coin)"))
+        .widgetURL(DeepLink.url(for: entry.symbol))
     }
 
     private func spreadText(_ book: BookSnapshot) -> Text {
@@ -62,7 +62,7 @@ struct BookEntryView: View {
         }
         .font(.caption2.monospacedDigit())
         .lineLimit(1)
-        .padding(.horizontal, 4)
+        .padding(.horizontal, Spacing.xs)
         .background { DepthBar(fraction: level.depthFraction, tint: side.tint) }
     }
 }

@@ -13,7 +13,7 @@ public struct DepthBar: View {
 
     public var body: some View {
         Rectangle()
-            .fill(tint.opacity(0.14))
+            .fill(tint.opacity(Opacity.depthBar))
             .scaleEffect(x: fraction, y: 1, anchor: .trailing)
             .allowsHitTesting(false)
             .accessibilityHidden(true)

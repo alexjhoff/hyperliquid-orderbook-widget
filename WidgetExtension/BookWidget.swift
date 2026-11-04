@@ -3,9 +3,11 @@ import SwiftUI
 import WidgetKit
 
 struct BookWidget: Widget {
+    static let kind = "com.alexhoff.OrderBookWidget.book"
+
     var body: some WidgetConfiguration {
         AppIntentConfiguration(
-            kind: "com.alexhoff.OrderBookWidget.book",
+            kind: Self.kind,
             intent: BookConfiguration.self,
             provider: BookTimelineProvider(fetcher: HyperliquidInfoClient())
         ) { entry in

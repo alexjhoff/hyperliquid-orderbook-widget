@@ -6,14 +6,14 @@ struct ColumnHeaderView: View {
 
     var body: some View {
         let unitName = unit == .usd ? Symbol.quoteCurrency : coin
-        HStack(spacing: 8) {
+        HStack(spacing: Spacing.m) {
             Text("Price (USD)", bundle: .module).frame(maxWidth: .infinity, alignment: .leading)
             Text("Size (\(unitName))", bundle: .module).frame(maxWidth: .infinity, alignment: .trailing)
             Text("Total (\(unitName))", bundle: .module).frame(maxWidth: .infinity, alignment: .trailing)
         }
         .font(.caption2.weight(.medium))
         .foregroundStyle(.secondary)
-        .padding(.horizontal, 12)
-        .padding(.vertical, 6)
+        .padding(.horizontal, Spacing.l)
+        .padding(.vertical, Spacing.s)
     }
 }
