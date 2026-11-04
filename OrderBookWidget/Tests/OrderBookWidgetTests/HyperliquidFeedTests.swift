@@ -1,4 +1,5 @@
 import Foundation
+import Synchronization
 import Testing
 
 @testable import OrderBookWidget
@@ -98,6 +99,38 @@ struct HyperliquidFeedTests {
         let second = try #require(sockets.all.last)
         #expect(second !== first)
         #expect(await eventually { second.sent == [ClientMessage.subscribe(btc)] })
+        await feed.disconnect()
+    }
+
+    @Test func aSubscribeDuringASlowCloseKeepsTheNewConnectionWorking() async throws {
+        let feed = makeFeed()
+        let stream = await feed.events()
+        let books = Mutex(0)
+        let consumer = Task {
+            for await event in stream {
+                if case .book = event { books.withLock { $0 += 1 } }
+            }
+        }
+        defer { consumer.cancel() }
+
+        await feed.subscribe(btc)
+        #expect(await eventually { sockets.all.first?.sent == [ClientMessage.subscribe(btc)] })
+        let first = try #require(sockets.all.first)
+        first.holdClose()
+        let closing = Task { await feed.disconnect() }
+        #expect(await eventually { first.isClosed })
+
+        await feed.subscribe(btc)
+        #expect(await eventually { sockets.all.count == 2 && sockets.all.last?.sent == [ClientMessage.subscribe(btc)] })
+        let second = try #require(sockets.all.last)
+        second.push(Fixture.fullPrecisionAck)
+        second.push(Fixture.btcBook)
+        #expect(await eventually { books.withLock { $0 } == 1 })
+
+        first.releaseClose()
+        await closing.value
+        second.push(Fixture.btcBook)
+        #expect(await eventually { books.withLock { $0 } == 2 }, "finishing the old close must not disturb the new connection")
         await feed.disconnect()
     }
 

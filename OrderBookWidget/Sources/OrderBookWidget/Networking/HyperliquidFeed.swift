@@ -73,13 +73,16 @@ actor HyperliquidFeed: OrderBookFeed {
         guard let connection else { return }
         connection.cancel()
         self.connection = nil
-        await socket?.close()
+        let closing = socket
         socket = nil
         isOpen = false
         confirmed = nil
         pending = nil
         Log.feed.info("Disconnected by client")
         emit(.status(.disconnected))
+        // Last, because this suspends: a subscribe that lands here starts a new connection, and
+        // nothing above may run after it.
+        await closing?.close()
     }
 
     // MARK: - Connection
@@ -113,14 +116,18 @@ actor HyperliquidFeed: OrderBookFeed {
             } catch is CancellationError {
                 // disconnect() was called.
             } catch {
-                Log.feed.error("Connection lost: \(String(describing: error), privacy: .public)")
+                // A cancelled connection fails its socket calls on the way out; that is not a loss.
+                if !Task.isCancelled {
+                    Log.feed.error("Connection lost: \(String(describing: error), privacy: .public)")
+                }
             }
 
             await socket.close()
+            // disconnect() already reset the state, and a newer connection may own it by now.
+            guard !Task.isCancelled else { return }
             isOpen = false
             confirmed = nil
             pending = nil
-            guard !Task.isCancelled else { return }
 
             attempt += 1
             let delay = policy.delay(forAttempt: attempt, jitter: .random(in: policy.jitterRange))
@@ -133,6 +140,8 @@ actor HyperliquidFeed: OrderBookFeed {
     private func receiveLoop(_ socket: any SocketTransport) async throws {
         while true {
             let text = try await socket.receive()
+            // A frame from a socket being replaced must not touch the new connection's state.
+            try Task.checkCancellation()
             silence = .zero
             await handle(text)
         }

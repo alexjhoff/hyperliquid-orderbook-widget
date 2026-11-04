@@ -10,6 +10,8 @@ final class FakeSocket: SocketTransport, Sendable {
         var queued: [Result<String, any Error>] = []
         var waiter: CheckedContinuation<String, any Error>?
         var isClosed = false
+        var holdsClose = false
+        var closeWaiters: [CheckedContinuation<Void, Never>] = []
     }
 
     private let state = Mutex(State())
@@ -35,8 +37,29 @@ final class FakeSocket: SocketTransport, Sendable {
         }
     }
 
-    func close() {
+    func close() async {
         deliver(.failure(SocketError.closed(code: 1000)), closing: true)
+        await withCheckedContinuation { continuation in
+            let held = state.withLock { state -> Bool in
+                if state.holdsClose { state.closeWaiters.append(continuation) }
+                return state.holdsClose
+            }
+            if !held { continuation.resume() }
+        }
+    }
+
+    /// Makes `close()` suspend until `releaseClose()`, like a slow teardown.
+    func holdClose() {
+        state.withLock { $0.holdsClose = true }
+    }
+
+    func releaseClose() {
+        let waiters = state.withLock { state -> [CheckedContinuation<Void, Never>] in
+            state.holdsClose = false
+            defer { state.closeWaiters = [] }
+            return state.closeWaiters
+        }
+        for waiter in waiters { waiter.resume() }
     }
 
     /// A frame from the server.

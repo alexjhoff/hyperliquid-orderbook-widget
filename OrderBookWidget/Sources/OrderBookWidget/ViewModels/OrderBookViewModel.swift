@@ -61,7 +61,7 @@ final class OrderBookViewModel {
     func run() async {
         isFinished = false
         let events = await feed.events()
-        await feed.subscribe(subscription)
+        subscribeToCurrentSelection()
         for await event in events {
             apply(event)
         }
