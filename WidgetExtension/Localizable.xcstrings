@@ -1,18 +1,12 @@
 {
-  "sourceLanguage": "en",
-  "strings": {
-    "%@ · %@ bps": {},
-    "2 significant figures": {},
-    "3 significant figures": {},
-    "4 significant figures": {},
-    "5 significant figures": {},
-    "Choose the market and price grouping.": {},
-    "Couldn't reach Hyperliquid": {},
-    "Full precision": {},
-    "Market": {},
-    "Order Book": {},
-    "Price grouping": {},
-    "Top of the Hyperliquid book, refreshed every 15 minutes.": {}
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ · %@ bps" : {
+
+    },
+    "Couldn't reach Hyperliquid" : {
+
+    }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }
