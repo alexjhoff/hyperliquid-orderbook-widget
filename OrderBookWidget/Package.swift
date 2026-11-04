@@ -8,6 +8,7 @@ let package = Package(
         .library(name: "OrderBookWidget", targets: ["OrderBookWidget"])
     ],
     targets: [
-        .target(name: "OrderBookWidget")
+        .target(name: "OrderBookWidget"),
+        .testTarget(name: "OrderBookWidgetTests", dependencies: ["OrderBookWidget"]),
     ]
 )
