@@ -9,8 +9,8 @@ struct BookEntryView: View {
 
     private var rowsPerSide: Int {
         switch family {
-        case .systemSmall: 3
-        case .systemMedium: 5
+        // Small and medium are the same height, so they fit the same number of rows.
+        case .systemSmall, .systemMedium: 3
         default: 8
         }
     }
