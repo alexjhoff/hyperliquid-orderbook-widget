@@ -10,6 +10,8 @@
     "%llds ago": {},
     "Ask": {},
     "Bid": {},
+    "Book": {},
+    "Buy %@, size %@, at %@": {},
     "Connecting": {},
     "Connection, %@": {},
     "Double tap to recentre the book": {},
@@ -25,10 +27,15 @@
     "Price grouping": {},
     "Reconnecting": {},
     "Retry in %llds": {},
+    "Sell %@, size %@, at %@": {},
     "Size (%@)": {},
     "Size unit": {},
     "Spread": {},
-    "Total (%@)": {}
+    "Time": {},
+    "Total (%@)": {},
+    "Trades": {},
+    "View": {},
+    "Waiting for trades": {}
   },
   "version": "1.0"
 }

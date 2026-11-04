@@ -6,7 +6,10 @@ struct BookFooterView: View {
 
     var body: some View {
         HStack {
-            PrecisionMenu(selection: $viewModel.precision, mid: viewModel.book?.mid)
+            // Grouping applies to the book only; a trade happens at one exact price.
+            if viewModel.pane == .book {
+                PrecisionMenu(selection: $viewModel.precision, mid: viewModel.book?.mid)
+            }
             Spacer()
             Picker(selection: $viewModel.sizeUnit) {
                 Text(verbatim: viewModel.symbol.coin).tag(SizeUnit.coin)

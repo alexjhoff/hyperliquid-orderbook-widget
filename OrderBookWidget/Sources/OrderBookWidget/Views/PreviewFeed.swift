@@ -84,6 +84,15 @@
             if let snapshot = builder.build(from: book, subscription: subscription, receivedAt: .now) {
                 sink?.yield(.book(snapshot))
             }
+            let trade = WireTrade(
+                coin: subscription.coin,
+                side: Bool.random() ? "B" : "A",
+                px: String(format: "%.1f", base),
+                sz: String(format: "%.5f", Double.random(in: 0.001...2)),
+                time: Int64(Date.now.timeIntervalSince1970 * 1000),
+                tid: Int64.random(in: 1...Int64.max)
+            )
+            sink?.yield(.trades(TradeBuilder().build([trade])))
         }
     }
 #endif

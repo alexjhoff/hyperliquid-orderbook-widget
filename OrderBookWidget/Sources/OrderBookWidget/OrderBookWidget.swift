@@ -20,17 +20,24 @@ public struct OrderBookWidget: View {
     public var body: some View {
         VStack(spacing: 0) {
             BookHeaderView(viewModel: viewModel)
-            ColumnHeaderView(coin: viewModel.symbol.coin, unit: viewModel.sizeUnit)
-            BookListView(
-                book: viewModel.book,
-                unit: viewModel.sizeUnit,
-                isStale: viewModel.isStale,
-                subscription: viewModel.subscription
-            )
+            PanePickerView(viewModel: viewModel)
+            ColumnHeaderView(coin: viewModel.symbol.coin, unit: viewModel.sizeUnit, pane: viewModel.pane)
+            switch viewModel.pane {
+            case .book:
+                BookListView(
+                    book: viewModel.book,
+                    unit: viewModel.sizeUnit,
+                    isStale: viewModel.isStale,
+                    subscription: viewModel.subscription
+                )
+            case .trades:
+                TradeListView(trades: viewModel.trades, unit: viewModel.sizeUnit)
+            }
             BookFooterView(viewModel: viewModel)
         }
         .task { await viewModel.run() }
         // Haptics for user actions only. Market data never buzzes.
+        .sensoryFeedback(.selection, trigger: viewModel.pane)
         .sensoryFeedback(.selection, trigger: viewModel.symbol)
         .sensoryFeedback(.selection, trigger: viewModel.precision)
         .sensoryFeedback(.selection, trigger: viewModel.sizeUnit)
