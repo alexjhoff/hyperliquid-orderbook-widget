@@ -47,6 +47,7 @@ struct BookEntryView: View {
             }
         }
         .containerBackground(.fill.tertiary, for: .widget)
+        .widgetURL(URL(string: "orderbook://book?coin=\(entry.symbol.coin)"))
     }
 
     private func row(_ level: BookLevel, side: Side) -> some View {

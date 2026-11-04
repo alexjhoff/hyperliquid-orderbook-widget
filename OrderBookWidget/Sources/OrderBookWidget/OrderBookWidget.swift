@@ -6,8 +6,11 @@ public struct OrderBookWidget: View {
     @State private var viewModel: OrderBookViewModel
     @Environment(\.scenePhase) private var scenePhase
 
-    @MainActor public init() {
-        self.init(viewModel: OrderBookViewModel(feed: HyperliquidFeed(), selections: UserDefaultsSelectionStore()))
+    /// - Parameter symbol: Overrides the remembered market, e.g. when opened from a deep link.
+    @MainActor public init(symbol: Symbol? = nil) {
+        let selections = UserDefaultsSelectionStore()
+        if let symbol { selections.symbol = symbol }
+        self.init(viewModel: OrderBookViewModel(feed: HyperliquidFeed(), selections: selections))
     }
 
     @MainActor init(viewModel: OrderBookViewModel) {

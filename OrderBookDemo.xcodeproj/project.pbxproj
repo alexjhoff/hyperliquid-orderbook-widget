@@ -13,6 +13,7 @@
 		37890A434CBBF729115DAD35 /* DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A94456A675148C9ADE4ACF63 /* DemoApp.swift */; };
 		3EE63014D679A100F3832846 /* TradeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1011712E8362054314EAB7D /* TradeScreen.swift */; };
 		41AEEA5429364784EFC1EB86 /* BookWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91AEEB7E94E74A587305422B /* BookWidget.swift */; };
+		4943B3731F9B98A1D9AF5B06 /* DeepLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FABE2E65E3AFE0017C509F /* DeepLinkRouter.swift */; };
 		85A4035E3B31001439239DC2 /* BookEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FD873398795212AF2436E33 /* BookEntry.swift */; };
 		A2A60AD6D00CC5ED786B6A34 /* BookTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483B19BCA54D21B23EAC63E0 /* BookTimelineProvider.swift */; };
 		BD01FF30B630A93A906C332A /* BookConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B707885774AAFF22E060EF /* BookConfiguration.swift */; };
@@ -51,6 +52,7 @@
 		26B3487E59B68E7E8B751A3C /* OrderBookWidget */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OrderBookWidget; path = OrderBookWidget; sourceTree = SOURCE_ROOT; };
 		297BB779FFC1C6BCC9228EBE /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
 		483B19BCA54D21B23EAC63E0 /* BookTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookTimelineProvider.swift; sourceTree = "<group>"; };
+		56070B5C80C68FD41D1056C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		84B707885774AAFF22E060EF /* BookConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookConfiguration.swift; sourceTree = "<group>"; };
 		91AEEB7E94E74A587305422B /* BookWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookWidget.swift; sourceTree = "<group>"; };
 		A94456A675148C9ADE4ACF63 /* DemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoApp.swift; sourceTree = "<group>"; };
@@ -60,6 +62,7 @@
 		D85C2719788733D207122B79 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		ED901381D0D5BC79C2A03DED /* OrderBookWidgetExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = OrderBookWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1011712E8362054314EAB7D /* TradeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TradeScreen.swift; sourceTree = "<group>"; };
+		F9FABE2E65E3AFE0017C509F /* DeepLinkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkRouter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,7 +108,9 @@
 			isa = PBXGroup;
 			children = (
 				B35549383BC81B7DE775EEC6 /* Assets.xcassets */,
+				F9FABE2E65E3AFE0017C509F /* DeepLinkRouter.swift */,
 				A94456A675148C9ADE4ACF63 /* DemoApp.swift */,
+				56070B5C80C68FD41D1056C4 /* Info.plist */,
 				F1011712E8362054314EAB7D /* TradeScreen.swift */,
 			);
 			path = Demo;
@@ -257,6 +262,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4943B3731F9B98A1D9AF5B06 /* DeepLinkRouter.swift in Sources */,
 				37890A434CBBF729115DAD35 /* DemoApp.swift in Sources */,
 				3EE63014D679A100F3832846 /* TradeScreen.swift in Sources */,
 			);
@@ -339,6 +345,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Demo/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Order Book";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -426,6 +433,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Demo/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Order Book";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

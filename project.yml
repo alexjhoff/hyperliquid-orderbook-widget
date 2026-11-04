@@ -24,6 +24,12 @@ targets:
     dependencies:
       - package: OrderBookWidget
       - target: OrderBookWidgetExtension
+    info:
+      path: Demo/Info.plist
+      properties:
+        CFBundleURLTypes:
+          - CFBundleURLName: com.alexhoff.OrderBookWidgetDemo
+            CFBundleURLSchemes: [orderbook]
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.alexhoff.OrderBookWidgetDemo

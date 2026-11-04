@@ -3,16 +3,23 @@ import SwiftUI
 
 /// A mock trade page that hosts the widget as a card, the way a trading app would.
 struct TradeScreen: View {
+    /// Set by a deep link. Changing it rebuilds the widget on that market.
+    @State private var linkedSymbol: Symbol?
+
     var body: some View {
         VStack(spacing: 12) {
             MarketHeader()
-            OrderBookWidget()
+            OrderBookWidget(symbol: linkedSymbol)
+                .id(linkedSymbol)
                 .background(Color(uiColor: .secondarySystemGroupedBackground))
                 .clipShape(.rect(cornerRadius: 16))
         }
         .padding(.horizontal, 12)
         .padding(.bottom, 8)
         .background(Color(uiColor: .systemGroupedBackground))
+        .onOpenURL { url in
+            if let symbol = DeepLinkRouter.symbol(from: url) { linkedSymbol = symbol }
+        }
     }
 }
 
