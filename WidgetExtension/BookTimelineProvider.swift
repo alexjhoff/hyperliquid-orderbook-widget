@@ -13,11 +13,11 @@ struct BookTimelineProvider: AppIntentTimelineProvider {
     }
 
     func snapshot(for configuration: BookConfiguration, in context: Context) async -> BookEntry {
-        await entry(symbol: .btc, precision: .full)
+        await entry(symbol: configuration.market.symbol, precision: configuration.grouping.precision)
     }
 
     func timeline(for configuration: BookConfiguration, in context: Context) async -> Timeline<BookEntry> {
-        let entry = await entry(symbol: .btc, precision: .full)
+        let entry = await entry(symbol: configuration.market.symbol, precision: configuration.grouping.precision)
         let refresh = Date.now.addingTimeInterval(entry.snapshot == nil ? 5 * 60 : 15 * 60)
         return Timeline(entries: [entry], policy: .after(refresh))
     }
