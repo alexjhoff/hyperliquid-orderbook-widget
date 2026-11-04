@@ -1,6 +1,7 @@
 import SwiftUI
 
-/// Cumulative depth behind a row, anchored to the trailing edge like Hyperliquid's own book.
+/// Cumulative depth behind a row, growing from the leading edge. A small inset leaves a gap between
+/// neighbouring bars, so each level reads as its own bar.
 /// Driven by `scaleEffect`, a render-time transform, so animating it never triggers layout.
 public struct DepthBar: View {
     let fraction: Double
@@ -14,7 +15,8 @@ public struct DepthBar: View {
     public var body: some View {
         Rectangle()
             .fill(tint.opacity(Opacity.depthBar))
-            .scaleEffect(x: fraction, y: 1, anchor: .trailing)
+            .scaleEffect(x: fraction, y: 1, anchor: .leading)
+            .padding(.vertical, Spacing.hairline)
             .allowsHitTesting(false)
             .accessibilityHidden(true)
     }
