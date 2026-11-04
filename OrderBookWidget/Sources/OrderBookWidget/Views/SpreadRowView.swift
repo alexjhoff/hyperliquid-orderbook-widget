@@ -14,7 +14,7 @@ struct SpreadRowView: View {
             case .flat: .primary
             }
 
-        HStack(alignment: .firstTextBaseline, spacing: Spacing.s) {
+        HStack(alignment: .center, spacing: Spacing.s) {
             Text(verbatim: book?.midLabel ?? BookFormatter.placeholder)
                 .font(.title3.weight(.semibold).monospacedDigit())
                 .foregroundStyle(tint)
