@@ -1,0 +1,8 @@
+// Shared build settings. Signing team lives in the untracked Local.xcconfig:
+//   echo 'DEVELOPMENT_TEAM = ABCDE12345' > Config/Local.xcconfig
+MARKETING_VERSION = 1.0.0
+CURRENT_PROJECT_VERSION = 1
+CODE_SIGN_STYLE = Automatic
+DEVELOPMENT_TEAM =
+
+#include? "Local.xcconfig"
