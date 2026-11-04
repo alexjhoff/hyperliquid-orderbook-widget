@@ -38,8 +38,8 @@ public struct OrderBookWidget: View {
         .dynamicTypeSize(...DynamicTypeSize.xxLarge)
         .onChange(of: scenePhase) { _, phase in
             switch phase {
-            case .background: Task { await viewModel.disconnect() }
-            case .active: Task { await viewModel.reconnect() }
+            case .background: viewModel.sceneDidEnterBackground()
+            case .active: viewModel.sceneDidBecomeActive()
             default: break
             }
         }

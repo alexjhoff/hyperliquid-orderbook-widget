@@ -33,6 +33,10 @@ final class OrderBookViewModel {
 
     @ObservationIgnored private let feed: any OrderBookFeed
     @ObservationIgnored private let store: any SelectionStoring
+    /// The latest subscription change in flight; a newer one cancels it.
+    @ObservationIgnored private var subscribeTask: Task<Void, Never>?
+    /// The latest scene-phase reaction in flight.
+    @ObservationIgnored private var lifecycleTask: Task<Void, Never>?
 
     init(feed: any OrderBookFeed, selections: any SelectionStoring) {
         self.feed = feed
@@ -40,6 +44,11 @@ final class OrderBookViewModel {
         symbol = selections.symbol ?? .btc
         precision = selections.precision ?? .full
         sizeUnit = selections.sizeUnit ?? .coin
+    }
+
+    isolated deinit {
+        subscribeTask?.cancel()
+        lifecycleTask?.cancel()
     }
 
     /// What the widget wants to be streaming right now.
@@ -64,11 +73,21 @@ final class OrderBookViewModel {
     }
 
     /// Scene went to the background: drop the socket instead of letting the OS kill it.
+    func sceneDidEnterBackground() {
+        lifecycleTask?.cancel()
+        lifecycleTask = Task { await disconnect() }
+    }
+
+    /// Scene is active again.
+    func sceneDidBecomeActive() {
+        lifecycleTask?.cancel()
+        lifecycleTask = Task { await reconnect() }
+    }
+
     func disconnect() async {
         await feed.disconnect()
     }
 
-    /// Scene is active again.
     func reconnect() async {
         await feed.subscribe(subscription)
     }
@@ -79,7 +98,8 @@ final class OrderBookViewModel {
         Log.model.info("Selection changed to \(self.subscription, privacy: .public)")
         let feed = feed
         let subscription = subscription
-        Task { await feed.subscribe(subscription) }
+        subscribeTask?.cancel()
+        subscribeTask = Task { await feed.subscribe(subscription) }
     }
 
     private func apply(_ event: FeedEvent) {

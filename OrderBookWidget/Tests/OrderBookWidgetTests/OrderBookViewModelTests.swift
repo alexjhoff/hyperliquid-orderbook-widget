@@ -61,11 +61,11 @@ struct OrderBookViewModelTests {
         #expect(await feed.disconnects == 1, "the socket closes when the view's task ends")
     }
 
-    @Test func backgroundingDisconnects() async {
+    @Test func backgroundingDisconnectsAndActivatingResubscribes() async {
         let model = OrderBookViewModel(feed: feed, selections: store)
-        await model.disconnect()
-        #expect(await feed.disconnects == 1)
-        await model.reconnect()
-        #expect(await feed.subscriptions == [btc])
+        model.sceneDidEnterBackground()
+        #expect(await eventually { await feed.disconnects == 1 })
+        model.sceneDidBecomeActive()
+        #expect(await eventually { await feed.subscriptions == [btc] })
     }
 }
