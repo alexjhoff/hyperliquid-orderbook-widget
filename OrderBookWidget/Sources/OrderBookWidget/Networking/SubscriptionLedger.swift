@@ -3,16 +3,21 @@
 ///
 /// Book frames do not say which grouping they carry, so they are admitted only when `confirmed`
 /// equals `wanted` and no request is in flight. A change therefore unsubscribes the old grouping,
-/// waits for the ack, then subscribes the new one.
+/// waits for the ack, then subscribes the new one. Trades need none of this, because each trade names
+/// its coin: they follow the book's coin, and their requests go out without waiting.
 struct SubscriptionLedger: Sendable {
     enum Request: Equatable, Sendable {
         case subscribe(BookSubscription)
         case unsubscribe(BookSubscription)
+        case subscribeTrades(coin: String)
+        case unsubscribeTrades(coin: String)
 
         var text: String {
             switch self {
             case .subscribe(let subscription): ClientMessage.subscribe(subscription)
             case .unsubscribe(let subscription): ClientMessage.unsubscribe(subscription)
+            case .subscribeTrades(let coin): ClientMessage.subscribeTrades(coin: coin)
+            case .unsubscribeTrades(let coin): ClientMessage.unsubscribeTrades(coin: coin)
             }
         }
     }
@@ -20,6 +25,7 @@ struct SubscriptionLedger: Sendable {
     private(set) var wanted: BookSubscription?
     private var confirmed: BookSubscription?
     private var pending: Request?
+    private var tradesCoin: String?
 
     /// True when a book frame on the socket is known to belong to `wanted`.
     var admitsBooks: Bool {
@@ -34,21 +40,30 @@ struct SubscriptionLedger: Sendable {
     mutating func connectionEnded() {
         confirmed = nil
         pending = nil
+        tradesCoin = nil
     }
 
     /// What to send now to move the server towards `wanted`, recorded as in flight.
     mutating func nextRequests() -> [Request] {
-        guard pending == nil, confirmed != wanted else { return [] }
-        let request: Request
+        var requests = nextTradesRequests()
+        if let book = nextBookRequest() { requests.insert(book, at: 0) }
+        return requests
+    }
+
+    private mutating func nextBookRequest() -> Request? {
+        guard pending == nil, confirmed != wanted else { return nil }
         if let confirmed {
-            request = .unsubscribe(confirmed)
+            pending = .unsubscribe(confirmed)
         } else if let wanted {
-            request = .subscribe(wanted)
-        } else {
-            return []
+            pending = .subscribe(wanted)
         }
-        pending = request
-        return [request]
+        return pending
+    }
+
+    private mutating func nextTradesRequests() -> [Request] {
+        guard let coin = wanted?.coin, coin != tradesCoin else { return [] }
+        defer { tradesCoin = coin }
+        return (tradesCoin.map { [.unsubscribeTrades(coin: $0)] } ?? []) + [.subscribeTrades(coin: coin)]
     }
 
     mutating func didSubscribe(_ subscription: BookSubscription) {

@@ -10,6 +10,7 @@ actor HyperliquidFeed: OrderBookFeed {
     private let clock: any Clock<Duration>
     private let makeSocket: SocketFactory
     private var builder = SnapshotBuilder()
+    private let tradeBuilder = TradeBuilder()
 
     private var sink: AsyncStream<FeedEvent>.Continuation?
     private var connection: Task<Void, Never>?
@@ -188,8 +189,10 @@ actor HyperliquidFeed: OrderBookFeed {
             if let snapshot = builder.build(from: book, subscription: wanted, receivedAt: .now) {
                 emit(.book(snapshot))
             }
-        case .trades:
-            break
+        case .trades(let trades):
+            // After a market change, the old coin's trades can still be on the wire.
+            let built = tradeBuilder.build(trades.filter { $0.coin == ledger.wanted?.coin })
+            if !built.isEmpty { emit(.trades(built)) }
         case .subscribed(let subscription):
             Log.feed.info("Subscribed \(subscription, privacy: .public)")
             ledger.didSubscribe(subscription)

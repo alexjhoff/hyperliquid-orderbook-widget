@@ -115,6 +115,8 @@ final class OrderBookViewModel {
             // A late frame from a superseded symbol or grouping is never shown.
             guard snapshot.subscription == subscription else { return }
             book = snapshot
+        case .trades:
+            break
         }
     }
 }
