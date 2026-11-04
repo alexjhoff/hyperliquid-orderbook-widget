@@ -23,7 +23,7 @@ struct WireMessagesTests {
     @Test func decodesPongErrorAndUnknownChannels() throws {
         #expect(try ServerMessage.decode(#"{"channel":"pong"}"#).isPong)
         #expect(try ServerMessage.decode(#"{"channel":"error","data":"bad"}"#).errorText == "bad")
-        #expect(try ServerMessage.decode(#"{"channel":"trades","data":[]}"#).otherChannel == "trades")
+        #expect(try ServerMessage.decode(#"{"channel":"candle","data":[]}"#).otherChannel == "candle")
     }
 
     @Test func rejectsMalformedInput() {
@@ -38,6 +38,27 @@ struct WireMessagesTests {
         #expect(
             ClientMessage.unsubscribe(grouped)
                 == #"{"method":"unsubscribe","subscription":{"coin":"ETH","nSigFigs":3,"type":"l2Book"}}"#)
+    }
+
+    @Test func decodesATradesFrame() throws {
+        guard case .trades(let trades) = try ServerMessage.decode(Fixture.btcTrades) else {
+            Issue.record("not a trades frame")
+            return
+        }
+        #expect(trades.map(\.tid) == [435_596_369_646_620, 471_324_263_320_187])
+        #expect(trades.map(\.side) == ["B", "A"])
+    }
+
+    @Test func aTradesAckIsNotABookAck() throws {
+        guard case .other = try ServerMessage.decode(Fixture.tradesSubscribeAck) else {
+            Issue.record("a trades ack must not read as a book subscription")
+            return
+        }
+    }
+
+    @Test func encodesTradesRequests() {
+        #expect(ClientMessage.subscribeTrades(coin: "BTC") == #"{"method":"subscribe","subscription":{"coin":"BTC","type":"trades"}}"#)
+        #expect(ClientMessage.unsubscribeTrades(coin: "ETH") == #"{"method":"unsubscribe","subscription":{"coin":"ETH","type":"trades"}}"#)
     }
 }
 

@@ -12,12 +12,25 @@ enum ClientMessage {
         encode(Envelope(method: "unsubscribe", subscription: subscription))
     }
 
-    private struct Envelope: Encodable {
-        let method: String
-        let subscription: BookSubscription
+    static func subscribeTrades(coin: String) -> String {
+        encode(Envelope(method: "subscribe", subscription: TradesSubscription(coin: coin)))
     }
 
-    private static func encode(_ envelope: Envelope) -> String {
+    static func unsubscribeTrades(coin: String) -> String {
+        encode(Envelope(method: "unsubscribe", subscription: TradesSubscription(coin: coin)))
+    }
+
+    private struct TradesSubscription: Encodable {
+        var type = BookSubscriptionKind.trades
+        let coin: String
+    }
+
+    private struct Envelope<Subscription: Encodable>: Encodable {
+        let method: String
+        let subscription: Subscription
+    }
+
+    private static func encode<Subscription: Encodable>(_ envelope: Envelope<Subscription>) -> String {
         let encoder = JSONEncoder()
         encoder.outputFormatting = .sortedKeys
         guard let data = try? encoder.encode(envelope) else { return "" }
@@ -39,9 +52,26 @@ struct WireBook: Decodable, Sendable {
     let levels: [[WireLevel]]
 }
 
+/// One trade from the `trades` channel. `side` is the taker's: "B" bought, "A" sold. `tid` is unique
+/// but not ordered, so arrival order is the only ordering; `hash` is often all zeros and is unused.
+struct WireTrade: Decodable, Sendable {
+    let coin: String
+    let side: String
+    let px: String
+    let sz: String
+    let time: Int64
+    let tid: Int64
+}
+
+/// Channel names that appear in a subscription's `type`.
+enum BookSubscriptionKind {
+    static let trades = "trades"
+}
+
 /// Server frames, decoded in a single pass keyed on `channel`.
 enum ServerMessage: Decodable, Sendable {
     case book(WireBook)
+    case trades([WireTrade])
     case subscribed(BookSubscription)
     case unsubscribed(BookSubscription)
     case pong
@@ -63,8 +93,16 @@ enum ServerMessage: Decodable, Sendable {
         switch channel {
         case "l2Book":
             self = .book(try container.decode(WireBook.self, forKey: .data))
+        case BookSubscriptionKind.trades:
+            self = .trades(try container.decode([WireTrade].self, forKey: .data))
         case "subscriptionResponse":
             let ack = try container.decode(Ack.self, forKey: .data)
+            // Trades need no handshake: each trade names its coin. Their acks must not reach the
+            // book's bookkeeping, where one would read as a confirmed book subscription.
+            guard ack.subscription.type != BookSubscriptionKind.trades else {
+                self = .other(channel: channel)
+                return
+            }
             self = ack.method == "unsubscribe" ? .unsubscribed(ack.subscription) : .subscribed(ack.subscription)
         case "pong":
             self = .pong

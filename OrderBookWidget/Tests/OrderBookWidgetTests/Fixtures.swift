@@ -40,6 +40,20 @@ func makeBook(coin: String = "BTC", bids: [(String, String)], asks: [(String, St
 }
 
 extension Fixture {
+    /// Captured from the `trades` channel on 2026-11-04, with wallet addresses shortened. Oldest first.
+    static let btcTrades = #"""
+        {"channel":"trades","data":[{"coin":"BTC","side":"B","px":"80121.0","sz":"0.01199","time":1793829146896,"hash":"0x352fe17c182eb0fc36a90448143b8e0202640061b321cfced8f88cced7228ae6","tid":435596369646620,"users":["0xa920","0xaca2"]},{"coin":"BTC","side":"A","px":"80108.0","sz":"0.0005","time":1793829181002,"hash":"0x0000000000000000000000000000000000000000000000000000000000000000","tid":471324263320187,"users":["0xaca2","0x3b93"]}]}
+        """#
+
+    static let tradesSubscribeAck = #"""
+        {"channel":"subscriptionResponse","data":{"method":"subscribe","subscription":{"type":"trades","coin":"BTC"}}}
+        """#
+
+    /// Not captured: the same shape as `btcTrades`, for tests that need a second market.
+    static let ethTrades = #"""
+        {"channel":"trades","data":[{"coin":"ETH","side":"B","px":"2269.1","sz":"1.5","time":1793829181002,"hash":"0x0","tid":42,"users":[]}]}
+        """#
+
     /// Captured from POST https://api.hyperliquid.xyz/info on 2026-11-03, trimmed to one level per side.
     static let infoResponse = #"""
         {"coin":"ETH","time":1793761561338,"levels":[[{"px":"2229.9","sz":"0.116","n":1}],[{"px":"2230.0","sz":"149.3142","n":24}]]}

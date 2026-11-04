@@ -188,6 +188,8 @@ actor HyperliquidFeed: OrderBookFeed {
             if let snapshot = builder.build(from: book, subscription: wanted, receivedAt: .now) {
                 emit(.book(snapshot))
             }
+        case .trades:
+            break
         case .subscribed(let subscription):
             Log.feed.info("Subscribed \(subscription, privacy: .public)")
             ledger.didSubscribe(subscription)
