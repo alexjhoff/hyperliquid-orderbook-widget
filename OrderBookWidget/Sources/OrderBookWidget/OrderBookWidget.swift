@@ -16,6 +16,7 @@ public struct OrderBookWidget: View {
 
     public var body: some View {
         VStack(spacing: 0) {
+            BookHeaderView(viewModel: viewModel)
             ColumnHeaderView(coin: viewModel.symbol.coin, unit: viewModel.sizeUnit)
             BookListView(
                 book: viewModel.book,
