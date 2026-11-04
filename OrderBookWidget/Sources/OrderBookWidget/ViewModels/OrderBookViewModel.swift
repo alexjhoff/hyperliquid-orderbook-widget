@@ -33,10 +33,10 @@ final class OrderBookViewModel {
 
     @ObservationIgnored private let feed: any OrderBookFeed
     @ObservationIgnored private let store: any SelectionStoring
-    /// The latest subscription change in flight; a newer one cancels it.
-    @ObservationIgnored private var subscribeTask: Task<Void, Never>?
-    /// The latest scene-phase reaction in flight.
-    @ObservationIgnored private var lifecycleTask: Task<Void, Never>?
+    /// The last feed call asked for. Each new one waits for it, so they reach the feed in order.
+    @ObservationIgnored private var lastCommand: Task<Void, Never>?
+    /// Set once `run()` ends: the view is gone, so nothing may reopen the socket.
+    @ObservationIgnored private var isFinished = false
 
     init(feed: any OrderBookFeed, selections: any SelectionStoring) {
         self.feed = feed
@@ -44,11 +44,6 @@ final class OrderBookViewModel {
         symbol = selections.symbol ?? .btc
         precision = selections.precision ?? .full
         sizeUnit = selections.sizeUnit ?? .coin
-    }
-
-    isolated deinit {
-        subscribeTask?.cancel()
-        lifecycleTask?.cancel()
     }
 
     /// What the widget wants to be streaming right now.
@@ -64,42 +59,51 @@ final class OrderBookViewModel {
     /// Connects and applies events until cancelled, then closes the socket. Call from `.task`,
     /// so the connection lives exactly as long as the view does.
     func run() async {
+        isFinished = false
         let events = await feed.events()
         await feed.subscribe(subscription)
         for await event in events {
             apply(event)
         }
-        await feed.disconnect()
+        isFinished = true
+        let feed = feed
+        enqueue { await feed.disconnect() }
+        await lastCommand?.value
     }
 
     /// Scene went to the background: drop the socket instead of letting the OS kill it.
     func sceneDidEnterBackground() {
-        lifecycleTask?.cancel()
-        lifecycleTask = Task { await disconnect() }
+        guard !isFinished else { return }
+        let feed = feed
+        enqueue { await feed.disconnect() }
     }
 
     /// Scene is active again.
     func sceneDidBecomeActive() {
-        lifecycleTask?.cancel()
-        lifecycleTask = Task { await reconnect() }
-    }
-
-    func disconnect() async {
-        await feed.disconnect()
-    }
-
-    func reconnect() async {
-        await feed.subscribe(subscription)
+        guard !isFinished else { return }
+        subscribeToCurrentSelection()
     }
 
     // MARK: - Private
 
     private func resubscribe() {
         Log.model.info("Selection changed to \(self.subscription, privacy: .public)")
+        guard !isFinished else { return }
+        subscribeToCurrentSelection()
+    }
+
+    private func subscribeToCurrentSelection() {
         let feed = feed
         let subscription = subscription
-        subscribeTask?.cancel()
-        subscribeTask = Task { await feed.subscribe(subscription) }
+        enqueue { await feed.subscribe(subscription) }
+    }
+
+    private func enqueue(_ operation: @escaping @Sendable () async -> Void) {
+        let previous = lastCommand
+        lastCommand = Task {
+            await previous?.value
+            await operation()
+        }
     }
 
     private func apply(_ event: FeedEvent) {

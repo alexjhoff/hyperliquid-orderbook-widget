@@ -61,6 +61,30 @@ struct OrderBookViewModelTests {
         #expect(await feed.disconnects == 1, "the socket closes when the view's task ends")
     }
 
+    @Test func nothingReopensTheSocketAfterRunEnds() async {
+        let model = OrderBookViewModel(feed: feed, selections: store)
+        let running = Task { await model.run() }
+        #expect(await eventually { await feed.subscriptions == [btc] })
+        running.cancel()
+        await running.value
+
+        model.sceneDidBecomeActive()
+        model.symbol = .eth
+        await Task.yield()
+        #expect(await feed.subscriptions == [btc], "a late scene change on a dismissed widget must not reconnect")
+        #expect(store.symbol == .eth, "the selection is still remembered")
+    }
+
+    @Test func feedCallsArriveInTheOrderTheyWereMade() async {
+        let model = OrderBookViewModel(feed: feed, selections: store)
+        model.symbol = .eth
+        model.symbol = .btc
+        model.precision = .three
+        let last = BookSubscription(coin: "BTC", nSigFigs: 3)
+        #expect(await eventually { await feed.subscriptions.count == 3 })
+        #expect(await feed.subscriptions.last == last)
+    }
+
     @Test func backgroundingDisconnectsAndActivatingResubscribes() async {
         let model = OrderBookViewModel(feed: feed, selections: store)
         model.sceneDidEnterBackground()
