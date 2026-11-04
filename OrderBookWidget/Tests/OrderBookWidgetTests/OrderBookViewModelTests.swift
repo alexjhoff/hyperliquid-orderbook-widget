@@ -31,6 +31,24 @@ struct OrderBookViewModelTests {
         #expect(!model.isStale)
     }
 
+    @Test func keepsTradesForTheCurrentMarketOnly() async {
+        let model = OrderBookViewModel(feed: feed, selections: store)
+        let running = Task { await model.run() }
+        defer { running.cancel() }
+        #expect(await eventually { await feed.subscriptions == [btc] })
+
+        await feed.send(.trades([makeTrade(1, coin: "ETH"), makeTrade(2)]))
+        #expect(await eventually { !model.trades.isEmpty })
+        #expect(model.trades.map(\.id) == [2], "another market's trades are ignored")
+
+        model.symbol = .eth
+        #expect(model.trades.isEmpty, "changing market starts a new tape")
+        await feed.send(.trades([makeTrade(3)]))
+        await feed.send(.trades([makeTrade(4, coin: "ETH")]))
+        #expect(await eventually { !model.trades.isEmpty })
+        #expect(model.trades.map(\.id) == [4])
+    }
+
     @Test func changingASelectionPersistsAndResubscribes() async {
         let model = OrderBookViewModel(feed: feed, selections: store)
         let running = Task { await model.run() }

@@ -32,6 +32,10 @@ func makeSnapshot(_ subscription: BookSubscription, bestBid: String = "100") -> 
     return builder.build(from: makeBook(bids: [(bestBid, "1")], asks: [("101", "1")]), subscription: subscription, receivedAt: .now)!
 }
 
+func makeTrade(_ id: Int64, coin: String = "BTC") -> Trade {
+    Trade(id: id, coin: coin, side: .bid, labels: TradeLabels(price: "1", size: "1", sizeUSD: "$1", time: "0"))
+}
+
 /// Polls `condition` on the main actor until it holds or the timeout passes.
 @MainActor
 func eventually(timeout: Duration = .seconds(2), _ condition: @MainActor () async -> Bool) async -> Bool {

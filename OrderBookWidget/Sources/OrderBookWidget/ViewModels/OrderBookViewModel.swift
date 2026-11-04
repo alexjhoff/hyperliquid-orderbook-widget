@@ -10,6 +10,7 @@ final class OrderBookViewModel {
         didSet {
             guard symbol != oldValue else { return }
             store.symbol = symbol
+            tape.reset()
             resubscribe()
         }
     }
@@ -26,7 +27,10 @@ final class OrderBookViewModel {
         didSet { store.sizeUnit = sizeUnit }
     }
 
+    var pane = WidgetPane.book
+
     private(set) var book: BookSnapshot?
+    private var tape = TradeTape()
     private(set) var status: ConnectionStatus = .disconnected
     /// When `status` last changed. The header counts down a reconnect delay from here.
     private(set) var statusChangedAt = Date()
@@ -45,6 +49,9 @@ final class OrderBookViewModel {
         precision = selections.precision ?? .full
         sizeUnit = selections.sizeUnit ?? .coin
     }
+
+    /// The latest trades on the current market, newest first.
+    var trades: [Trade] { tape.trades }
 
     /// What the widget wants to be streaming right now.
     var subscription: BookSubscription {
@@ -115,8 +122,9 @@ final class OrderBookViewModel {
             // A late frame from a superseded symbol or grouping is never shown.
             guard snapshot.subscription == subscription else { return }
             book = snapshot
-        case .trades:
-            break
+        case .trades(let batch):
+            // A late batch from a superseded market is never shown.
+            tape.append(batch.filter { $0.coin == symbol.coin })
         }
     }
 }
