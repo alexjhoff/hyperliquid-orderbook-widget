@@ -40,8 +40,9 @@ actor HyperliquidFeed: OrderBookFeed {
         self.makeSocket = makeSocket
     }
 
+    /// The connection task retains the feed while it runs, so a feed is only released after
+    /// `disconnect()`; the view model calls it when its event loop ends.
     isolated deinit {
-        connection?.cancel()
         sink?.finish()
     }
 

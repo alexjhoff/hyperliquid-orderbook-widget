@@ -52,13 +52,15 @@ final class OrderBookViewModel {
         book?.subscription != subscription || status != .connected
     }
 
-    /// Connects and applies events until cancelled. Call from `.task`.
+    /// Connects and applies events until cancelled, then closes the socket. Call from `.task`,
+    /// so the connection lives exactly as long as the view does.
     func run() async {
         let events = await feed.events()
         await feed.subscribe(subscription)
         for await event in events {
             apply(event)
         }
+        await feed.disconnect()
     }
 
     /// Scene went to the background: drop the socket instead of letting the OS kill it.

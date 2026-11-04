@@ -50,6 +50,17 @@ struct OrderBookViewModelTests {
         #expect(await feed.subscriptions.count == 3, "a size unit change does not resubscribe")
     }
 
+    @Test func cancellingRunDisconnects() async {
+        let model = OrderBookViewModel(feed: feed, selections: store)
+        let running = Task { await model.run() }
+        #expect(await eventually { await feed.subscriptions == [btc] })
+        #expect(await feed.disconnects == 0)
+
+        running.cancel()
+        await running.value
+        #expect(await feed.disconnects == 1, "the socket closes when the view's task ends")
+    }
+
     @Test func backgroundingDisconnects() async {
         let model = OrderBookViewModel(feed: feed, selections: store)
         await model.disconnect()
