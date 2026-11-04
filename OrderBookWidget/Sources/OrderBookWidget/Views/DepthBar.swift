@@ -19,3 +19,10 @@ public struct DepthBar: View {
             .accessibilityHidden(true)
     }
 }
+
+#if DEBUG
+    #Preview {
+        DepthBar(fraction: 0.6, tint: .bid)
+            .frame(height: Layout.rowHeight)
+    }
+#endif

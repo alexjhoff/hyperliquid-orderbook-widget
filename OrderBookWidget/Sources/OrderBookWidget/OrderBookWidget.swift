@@ -50,4 +50,10 @@ public struct OrderBookWidget: View {
     #Preview {
         OrderBookWidget(viewModel: OrderBookViewModel(feed: PreviewFeed(), selections: InMemorySelectionStore()))
     }
+
+    #Preview("Dark, largest type") {
+        OrderBookWidget(viewModel: OrderBookViewModel(feed: PreviewFeed(), selections: InMemorySelectionStore()))
+            .preferredColorScheme(.dark)
+            .dynamicTypeSize(.accessibility5)
+    }
 #endif

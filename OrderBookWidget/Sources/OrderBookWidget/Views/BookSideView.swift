@@ -41,3 +41,11 @@ struct BookSideView: View {
         return side == .ask ? slots.reversed() : slots
     }
 }
+
+#if DEBUG
+    #Preview {
+        VStack(spacing: 0) {
+            BookSideView(side: .bid, levels: BookSnapshot.preview.bids, unit: .coin, depth: BookListView.depth, rowHeight: Layout.rowHeight)
+        }
+    }
+#endif

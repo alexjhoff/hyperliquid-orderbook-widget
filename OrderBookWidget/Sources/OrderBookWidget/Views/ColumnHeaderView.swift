@@ -17,3 +17,9 @@ struct ColumnHeaderView: View {
         .padding(.vertical, Spacing.s)
     }
 }
+
+#if DEBUG
+    #Preview {
+        ColumnHeaderView(coin: Symbol.btc.coin, unit: .usd)
+    }
+#endif

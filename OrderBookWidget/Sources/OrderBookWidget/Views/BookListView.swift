@@ -48,3 +48,9 @@ struct BookListView: View {
         !reduceMotion && (book?.sequence ?? 0) > 1 ? .smooth(duration: Motion.rowSlide) : nil
     }
 }
+
+#if DEBUG
+    #Preview {
+        BookListView(book: .preview, unit: .coin, isStale: false, subscription: BookSnapshot.preview.subscription)
+    }
+#endif

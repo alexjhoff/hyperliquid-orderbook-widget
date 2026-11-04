@@ -1,5 +1,6 @@
 #if DEBUG
     import Foundation
+    import SwiftUI
 
     extension BookSnapshot {
         /// A fixed BTC book for previews, in the app and in the Home Screen widget.
@@ -12,6 +13,21 @@
             let book = WireBook(coin: "BTC", time: 0, levels: [levels.map(\.bid), levels.map(\.ask)])
             return builder.build(from: book, subscription: BookSubscription(coin: "BTC", nSigFigs: nil), receivedAt: .now)!
         }()
+    }
+
+    /// Runs a view model on `PreviewFeed` for the previews of views that take one.
+    struct PreviewHost<Content: View>: View {
+        @State private var viewModel = OrderBookViewModel(feed: PreviewFeed(), selections: InMemorySelectionStore())
+        let content: (OrderBookViewModel) -> Content
+
+        init(@ViewBuilder content: @escaping (OrderBookViewModel) -> Content) {
+            self.content = content
+        }
+
+        var body: some View {
+            content(viewModel)
+                .task { await viewModel.run() }
+        }
     }
 
     /// A synthetic market for previews: a book that drifts and churns every half second.

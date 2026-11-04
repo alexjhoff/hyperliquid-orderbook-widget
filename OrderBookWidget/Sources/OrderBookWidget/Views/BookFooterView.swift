@@ -50,3 +50,9 @@ private struct PrecisionMenu: View {
         .accessibilityIdentifier(A11yID.precisionMenu)
     }
 }
+
+#if DEBUG
+    #Preview {
+        PreviewHost { BookFooterView(viewModel: $0) }
+    }
+#endif

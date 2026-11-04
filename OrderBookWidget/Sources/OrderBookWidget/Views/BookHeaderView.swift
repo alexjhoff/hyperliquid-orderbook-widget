@@ -58,3 +58,9 @@ private struct ConnectionStatusView: View {
         }
     }
 }
+
+#if DEBUG
+    #Preview {
+        PreviewHost { BookHeaderView(viewModel: $0) }
+    }
+#endif

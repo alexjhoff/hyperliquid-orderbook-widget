@@ -55,3 +55,12 @@ struct SpreadRowView: View {
         }
     }
 }
+
+#if DEBUG
+    #Preview {
+        VStack(spacing: Spacing.m) {
+            SpreadRowView(book: .preview)
+            SpreadRowView(book: nil)
+        }
+    }
+#endif

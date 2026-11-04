@@ -86,3 +86,13 @@ struct EmptyRow: View {
         .accessibilityHidden(true)
     }
 }
+
+#if DEBUG
+    #Preview {
+        VStack(spacing: 0) {
+            BookRowView(level: BookSnapshot.preview.asks[0], side: .ask, unit: .coin, height: Layout.rowHeight)
+            BookRowView(level: BookSnapshot.preview.bids[0], side: .bid, unit: .usd, height: Layout.rowHeight)
+            EmptyRow(height: Layout.rowHeight)
+        }
+    }
+#endif
