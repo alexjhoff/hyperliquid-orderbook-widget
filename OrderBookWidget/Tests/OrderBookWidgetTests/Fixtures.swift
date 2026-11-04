@@ -29,3 +29,12 @@ enum Fixture {
         return book
     }
 }
+
+/// Builds a raw book from (price, size) pairs, best first.
+func makeBook(coin: String = "BTC", bids: [(String, String)], asks: [(String, String)]) -> WireBook {
+    WireBook(
+        coin: coin,
+        time: 1_000,
+        levels: [bids.map { WireLevel(px: $0.0, sz: $0.1, n: 1) }, asks.map { WireLevel(px: $0.0, sz: $0.1, n: 1) }]
+    )
+}
